@@ -1,0 +1,223 @@
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #a4ef94, #1b641f);
+  min-height: 100vh;
+
+  display: block;
+  flex-direction: column;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+/* HEADER */
+.header {
+  background: white;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #4f46e5;
+}
+
+.menu a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.menu a:hover {
+  color: #4f46e5;
+}
+
+.login-area input {
+  padding: 6px 10px;
+  margin-right: 5px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.login-area button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #4f46e5;
+  color: white;
+  cursor: pointer;
+}
+
+.login-area button:hover {
+  background: #4338ca;
+}
+
+.hidden {
+  display: none;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  color: white;
+}
+
+.hero h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+/* PRODUCT GRID */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+  margin: 50px 0;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 15px;
+}
+
+.price {
+  color: green;
+  font-weight: bold;
+}
+
+/* ADMIN PANEL */
+.admin-panel {
+  width: 600px;
+  margin: 40px auto 20px auto; /* cách sản phẩm 40px, cách footer 20px */
+  padding: 25px;
+
+  border-radius: 16px;
+  background: linear-gradient(135deg, #eaffea, #c8f7c5);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.admin-panel h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #4f46e5;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.admin-panel input,
+.admin-panel textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+
+  border: 1px solid #b2dfdb;
+  border-radius: 10px;
+  outline: none;
+
+  transition: 0.3s;
+}
+
+.admin-panel input:focus,
+.admin-panel textarea:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 5px rgba(102, 187, 106, 0.4);
+}
+
+.admin-panel textarea {
+  resize: none;
+  min-height: 80px;
+}
+.btn-wrapper {
+  display: flex;
+  justify-content: flex-end; /* đẩy sang phải */
+}
+.btn-add {
+  padding: 14px 30px;
+  border-radius: 12px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.btn-edit {
+  color: #2e7d32;
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #fbd786, #f7797d);
+  color: rgb(214, 12, 12);
+}
+
+
+/* FLOAT BUTTONS */
+.zalo-btn,
+.hotline-btn {
+  position: fixed;
+  right: 20px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.zalo-btn {
+  bottom: 250px;
+  background: #0ea5e9;
+}
+
+.hotline-btn {
+  bottom: 190px;
+  background: #ef4444;
+}
+
+footer {
+  background: white;
+  text-align: center;
+  padding: 20px;
+}
+main {
+  padding-bottom: 120px;
+}
+
+button:hover {
+  background: #43959b;
+  transform: translateY(-2px);
+}
