@@ -18,7 +18,7 @@ function renderProducts(products, isAdmin) {
     }
 
     card.innerHTML = `
-      <img src="${p.image_url}" />
+      <img src="${p.image}" />
       <div class="card-content">
         <h3>${p.name}</h3>
         <div class="price">${p.price.toLocaleString()} đ</div>
