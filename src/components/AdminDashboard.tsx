@@ -5,34 +5,33 @@ import type { Order, OrderStatus } from '../types/order';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../types/order';
 import { getOrders, updateOrderStatus, deleteOrder } from '../api/orders';
 import ImageUpload from './ImageUpload';
+import { FIXED_CATEGORIES } from '../constants/categories';
 
 interface AdminDashboardProps {
     onAdd: (product: ProductInput) => Promise<void>;
 }
-
-const CATEGORIES = [
-    { key: 'all', label: 'Tất cả' },
-    { key: 'but', label: 'Bút viết' },
-    { key: 'vo', label: 'Vở' },
-    { key: 'dungcu', label: 'Dụng cụ học tập' },
-    { key: 'mythuat', label: 'Mỹ thuật' },
-];
 
 const ALL_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'delivering', 'delivered', 'cancelled'];
 
 interface FormErrors { name?: string; price?: string; image?: string; }
 
 // ===================== ADD PRODUCT FORM =====================
+const CUSTOM_KEY = '__custom__'; // sentinel value for "custom category" option
+
 function AddProductForm({ onAdd }: { onAdd: (product: ProductInput) => Promise<void> }) {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState('');
     const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('all');
+    const [selectValue, setSelectValue] = useState('but'); // selected option in <select>
+    const [customCategory, setCustomCategory] = useState('');  // free-text khi chọn "Thêm mới"
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
     const [showSuccess, setShowSuccess] = useState(false);
     const [imageKey, setImageKey] = useState(0);
+
+    // Danh mục thực tế sẽ được lưu (bỏ 'khac' nếu không phải custom)
+    const effectiveCategory = selectValue === CUSTOM_KEY ? customCategory.trim() : selectValue;
 
     const validate = (): boolean => {
         const e: FormErrors = {};
@@ -40,13 +39,14 @@ function AddProductForm({ onAdd }: { onAdd: (product: ProductInput) => Promise<v
         if (!price) e.price = 'Vui lòng nhập giá';
         else if (isNaN(parseInt(price)) || parseInt(price) <= 0) e.price = 'Giá không hợp lệ';
         if (!image) e.image = 'Vui lòng upload ảnh sản phẩm';
+        if (selectValue === CUSTOM_KEY && !customCategory.trim()) e.name = (e.name ? e.name + ' | ' : '') + 'Vui lòng nhập tên danh mục mới';
         setErrors(e);
         return Object.keys(e).length === 0;
     };
 
     const resetForm = () => {
         setName(''); setPrice(''); setImage('');
-        setDescription(''); setCategory('all');
+        setDescription(''); setSelectValue('but'); setCustomCategory('');
         setErrors({}); setImageKey((k) => k + 1);
     };
 
@@ -54,7 +54,7 @@ function AddProductForm({ onAdd }: { onAdd: (product: ProductInput) => Promise<v
         if (!validate()) return;
         setLoading(true);
         try {
-            await onAdd({ name: name.trim(), price: parseInt(price), image, description, category });
+            await onAdd({ name: name.trim(), price: parseInt(price), image, description, category: effectiveCategory });
             resetForm();
             setShowSuccess(true);
         } catch {
@@ -107,9 +107,28 @@ function AddProductForm({ onAdd }: { onAdd: (product: ProductInput) => Promise<v
                     onChange={(e) => setDescription(e.target.value)}
                 />
 
-                <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                    {CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+                {/* Category selector */}
+                <label className="field-label">Danh mục</label>
+                <select
+                    value={selectValue}
+                    onChange={(e) => { setSelectValue(e.target.value); setCustomCategory(''); }}
+                >
+                    {FIXED_CATEGORIES.map((c) => (
+                        <option key={c.key} value={c.key}>{c.icon} {c.label}</option>
+                    ))}
+                    <option value={CUSTOM_KEY}>➕ Thêm danh mục mới...</option>
                 </select>
+
+                {/* Free-text input khi chọn "Thêm danh mục mới" */}
+                {selectValue === CUSTOM_KEY && (
+                    <input
+                        placeholder="Nhập tên danh mục mới *"
+                        value={customCategory}
+                        onChange={(e) => setCustomCategory(e.target.value)}
+                        autoFocus
+                        className="custom-category-input"
+                    />
+                )}
 
                 <div className="btn-wrapper">
                     <button onClick={handleAdd} className="btn-add" disabled={loading}>

@@ -34,7 +34,7 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
                         <span className="hero-title-accent">Chất Lượng Cao</span>
                     </h1>
                     <p className="hero-subtitle">
-                        Đại lý uy tín — Nhận đặt sách giáo khoa theo yêu cầu, giá tốt nhất
+                        Chuyên nhận đặt SGK giá tốt - Photo - In - Gói quà lưu niệm
                     </p>
 
 

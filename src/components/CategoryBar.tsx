@@ -1,23 +1,19 @@
 // src/components/CategoryBar.tsx
-
-const CATEGORIES = [
-    { key: 'all', label: 'Tất cả', icon: '🏪' },
-    { key: 'but', label: 'Bút viết', icon: '✏️' },
-    { key: 'vo', label: 'Vở', icon: '📓' },
-    { key: 'dungcu', label: 'Dụng cụ HT', icon: '📐' },
-    { key: 'mythuat', label: 'Mỹ thuật', icon: '🎨' },
-] as const;
+import { buildCategoryList } from '../constants/categories';
 
 interface CategoryBarProps {
     activeCategory: string;
     onFilter: (category: string) => void;
+    productCategories?: string[]; // danh mục thực tế từ các sản phẩm trong DB
 }
 
-export default function CategoryBar({ activeCategory, onFilter }: CategoryBarProps) {
+export default function CategoryBar({ activeCategory, onFilter, productCategories = [] }: CategoryBarProps) {
+    const categories = buildCategoryList(productCategories);
+
     return (
         <div className="category-bar">
             <div className="container category-list">
-                {CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                     <button
                         key={cat.key}
                         className={`category-pill${activeCategory === cat.key ? ' active' : ''}`}

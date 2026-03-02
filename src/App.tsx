@@ -119,6 +119,7 @@ export default function App() {
             <CategoryBar
                 activeCategory={activeCategory}
                 onFilter={(cat) => { setActiveCategory(cat); setSearchQuery(''); }}
+                productCategories={products.map((p) => p.category ?? '').filter(Boolean)}
             />
 
             <main className="container" id="product-list">
