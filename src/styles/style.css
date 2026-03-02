@@ -2209,7 +2209,10 @@ button {
 
 @media (max-width: 600px) {
   .hero-image-wrap {
-    display: none;
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    margin: 16px auto 0;
   }
 }
 
