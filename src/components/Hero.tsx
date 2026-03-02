@@ -26,7 +26,7 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
         <section className="hero" id="home">
             <div className="hero-bg" />
             <div className="container hero-inner">
-                {/* Left: Text + Search */}
+                {/* Left: Text (title + subtitle only) */}
                 <div className="hero-content">
                     <div className="hero-badge">🔥 Ưu đãi đặc biệt hôm nay</div>
                     <h1 className="hero-title">
@@ -37,10 +37,8 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
                         Chuyên nhận đặt SGK giá tốt - Photo - In - Gói quà lưu niệm
                     </p>
 
-
-
-                    {/* Search bar inside hero */}
-                    <div className="hero-search">
+                    {/* Search bar — hidden on mobile, shown here on desktop */}
+                    <div className="hero-search hero-search-desktop">
                         <span className="hero-search-icon">🔍</span>
                         <input
                             type="text"
@@ -55,7 +53,7 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
                     </div>
                 </div>
 
-                {/* Right: Stationery image carousel */}
+                {/* Right: Image carousel */}
                 <div className="hero-image-wrap">
                     <div className="hero-image-glow" />
                     <div className="hero-carousel">
@@ -81,6 +79,21 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
                             ))}
                         </div>
                     </div>
+                </div>
+
+                {/* Search bar — mobile only, shown BELOW the image */}
+                <div className="hero-search hero-search-mobile">
+                    <span className="hero-search-icon">🔍</span>
+                    <input
+                        type="text"
+                        placeholder="Tìm bút, vở, sách giáo khoa..."
+                        value={searchQuery}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                        className="hero-search-input"
+                    />
+                    {searchQuery && (
+                        <button className="hero-search-clear" onClick={() => onSearchChange('')}>✕</button>
+                    )}
                 </div>
             </div>
         </section>

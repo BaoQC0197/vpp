@@ -714,6 +714,15 @@ img {
   transition: all var(--transition);
 }
 
+/* Desktop: show the search inside hero-content, hide the standalone one */
+.hero-search-mobile {
+  display: none;
+}
+
+.hero-search-desktop {
+  display: flex;
+}
+
 .hero-search:focus-within {
   transform: translateY(-2px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
@@ -2204,6 +2213,18 @@ button {
     width: 100%;
     max-width: 360px;
     margin: 0 auto;
+  }
+
+  /* On mobile: hide desktop search, show the one below the image */
+  .hero-search-desktop {
+    display: none;
+  }
+
+  .hero-search-mobile {
+    display: flex;
+    max-width: 100%;
+    width: 100%;
+    margin-top: 20px;
   }
 }
 
