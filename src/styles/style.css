@@ -419,7 +419,7 @@ img {
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  max-width: 520px;
+  max-width: 640px;
   display: flex;
   align-items: stretch;
   justify-content: center;
@@ -2211,8 +2211,8 @@ button {
   .hero-image-wrap {
     flex: none;
     width: 100%;
-    max-width: 360px;
-    margin: 0 auto;
+    max-width: 640px;
+    margin: 20px auto 0;
   }
 
   /* On mobile: hide desktop search, show the one below the image */
@@ -2232,7 +2232,7 @@ button {
   .hero-image-wrap {
     display: block;
     width: 100%;
-    max-width: 260px;
+    max-width: 100%;
     margin: 16px auto 0;
   }
 }
