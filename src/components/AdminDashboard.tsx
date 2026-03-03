@@ -9,6 +9,7 @@ import { FIXED_CATEGORIES } from '../constants/categories';
 
 interface AdminDashboardProps {
     onAdd: (product: ProductInput) => Promise<void>;
+    productCategories?: string[]; // danh mục thực tế từ DB
 }
 
 const ALL_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'delivering', 'delivered', 'cancelled'];
@@ -18,7 +19,15 @@ interface FormErrors { name?: string; price?: string; image?: string; }
 // ===================== ADD PRODUCT FORM =====================
 const CUSTOM_KEY = '__custom__'; // sentinel value for "custom category" option
 
-function AddProductForm({ onAdd }: { onAdd: (product: ProductInput) => Promise<void> }) {
+function AddProductForm({ onAdd, productCategories = [] }: {
+    onAdd: (product: ProductInput) => Promise<void>;
+    productCategories?: string[];
+}) {
+    // Các danh mục custom từ DB chưa có trong FIXED_CATEGORIES
+    const fixedKeys = new Set(FIXED_CATEGORIES.map((c) => c.key));
+    const extraCategories = [...new Set(productCategories)].filter(
+        (k) => k && !fixedKeys.has(k)
+    );
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState('');
@@ -116,6 +125,13 @@ function AddProductForm({ onAdd }: { onAdd: (product: ProductInput) => Promise<v
                     {FIXED_CATEGORIES.map((c) => (
                         <option key={c.key} value={c.key}>{c.icon} {c.label}</option>
                     ))}
+                    {extraCategories.length > 0 && (
+                        <optgroup label="── Danh mục đã tạo ──">
+                            {extraCategories.map((k) => (
+                                <option key={k} value={k}>🏷️ {k}</option>
+                            ))}
+                        </optgroup>
+                    )}
                     <option value={CUSTOM_KEY}>➕ Thêm danh mục mới...</option>
                 </select>
 
@@ -413,7 +429,7 @@ function OrderHistory() {
 // ===================== ADMIN DASHBOARD (Main) =====================
 type Tab = 'products' | 'orders';
 
-export default function AdminDashboard({ onAdd }: AdminDashboardProps) {
+export default function AdminDashboard({ onAdd, productCategories = [] }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState<Tab>('products');
 
     return (
@@ -436,7 +452,7 @@ export default function AdminDashboard({ onAdd }: AdminDashboardProps) {
 
             {/* Tab content */}
             <div className="dashboard-content">
-                {activeTab === 'products' && <AddProductForm onAdd={onAdd} />}
+                {activeTab === 'products' && <AddProductForm onAdd={onAdd} productCategories={productCategories} />}
                 {activeTab === 'orders' && <OrderHistory />}
             </div>
         </div>

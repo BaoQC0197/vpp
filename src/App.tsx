@@ -133,7 +133,7 @@ export default function App() {
                 />
             </main>
 
-            {isAdmin && <AdminDashboard onAdd={handleAdd} />}
+            {isAdmin && <AdminDashboard onAdd={handleAdd} productCategories={products.map((p) => p.category ?? '').filter(Boolean)} />}
 
             {editingProduct && (
                 <EditModal
