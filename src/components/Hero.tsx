@@ -6,10 +6,9 @@ interface HeroProps {
 }
 
 const CAROUSEL_IMAGES = [
-    '/hero-stationery.png',
-    '/skg.png',
-    '/may-photo.png',
-    '/stationery.png',
+    '/hero-rect-1.png',
+    '/hero-rect-2.png',
+    '/hero-rect-3.png',
 ];
 
 export default function Hero({ searchQuery, onSearchChange }: HeroProps) {

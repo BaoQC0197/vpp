@@ -409,7 +409,7 @@ img {
 /* Hero 2-column layout */
 .hero-inner {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 40px;
 }
@@ -417,10 +417,11 @@ img {
 /* Hero image */
 .hero-image-wrap {
   position: relative;
-  flex: 0 0 420px;
-  width: 420px;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 520px;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
 }
 
@@ -436,7 +437,10 @@ img {
 .hero-carousel {
   position: relative;
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
 }
 
 .hero-carousel-item {
@@ -445,9 +449,7 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-lg);
   object-fit: cover;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, .35));
   opacity: 0;
   transition: opacity 0.8s ease-in-out;
   pointer-events: none;
@@ -456,7 +458,6 @@ img {
 .hero-carousel-item.active {
   opacity: 1;
   pointer-events: auto;
-  animation: float-hero 4s ease-in-out infinite;
 }
 
 .hero-carousel-indicators {
