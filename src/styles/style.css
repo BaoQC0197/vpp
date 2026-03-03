@@ -695,8 +695,7 @@ img {
   position: relative;
   background: linear-gradient(135deg, #064e3b 0%, #059669 40%, #10b981 70%, #34d399 100%);
   overflow: hidden;
-  padding: 60px 0 50px;
-  /* Reduced padding */
+  padding: 44px 0 40px;
 }
 
 /* Hero search bar - professional style */
@@ -708,7 +707,7 @@ img {
   border-radius: var(--radius-full);
   padding: 4px 6px 4px 18px;
   max-width: 480px;
-  margin-top: 32px;
+  margin-top: 48px;
   margin-bottom: 0px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   transition: all var(--transition);
