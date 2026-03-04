@@ -35,8 +35,11 @@ export default function Header({ isAdmin, cartCount, onLogin, onLogout, onCartOp
         { label: 'Liên hệ', href: '#contact' },
     ];
 
+    const closeMenu = () => setMenuOpen(false);
+
     return (
         <>
+            {/* ── Header bar ────────────────────────────────────────── */}
             <header className={styles.header}>
                 <div className={styles.headerInner}>
                     {/* Logo */}
@@ -45,31 +48,13 @@ export default function Header({ isAdmin, cartCount, onLogin, onLogout, onCartOp
                         <span className={styles.logoText}>VPP <span className={styles.logoAccent}>Ti Anh</span></span>
                     </a>
 
-                    {/* Desktop Nav */}
-                    <nav className={`${styles.navMenu}${menuOpen ? ' ' + styles.open : ''}`}>
-                        <button className={styles.navClose} onClick={() => setMenuOpen(false)}>✕</button>
-
-                        <div className={styles.navBanner}>
-                            <div className={styles.navBannerBg} />
-                            <span className={styles.navBannerIcon}>📚</span>
-                            <div className={styles.navBannerText}>
-                                <strong>VPP Ti Anh</strong>
-                                <span>Văn phòng phẩm chất lượng</span>
-                            </div>
-                        </div>
-
-                        <div className={styles.navLinksSection}>
-                            {navLinks.map((link) => (
-                                <a key={link.label} href={link.href} className={styles.navLink} onClick={() => setMenuOpen(false)}>
-                                    {link.label}
-                                </a>
-                            ))}
-                        </div>
-
-                        <div className={styles.navFooter}>
-                            <span>📞 Liên hệ đặt hàng</span>
-                            <span>🕐 8:00 – 20:00 mỗi ngày</span>
-                        </div>
+                    {/* Desktop nav links (hidden on mobile) */}
+                    <nav className={styles.desktopNav}>
+                        {navLinks.map((link) => (
+                            <a key={link.label} href={link.href} className={styles.navLink}>
+                                {link.label}
+                            </a>
+                        ))}
                     </nav>
 
                     {/* Right actions */}
@@ -109,7 +94,35 @@ export default function Header({ isAdmin, cartCount, onLogin, onLogout, onCartOp
                 </div>
             </header>
 
-            {menuOpen && <div className={styles.navOverlay} onClick={() => setMenuOpen(false)} />}
+            {/* ── Mobile slide-out nav — NGOÀI header để tránh stacking context ── */}
+            <nav className={`${styles.mobileNav}${menuOpen ? ' ' + styles.open : ''}`} aria-hidden={!menuOpen}>
+                <button className={styles.navClose} onClick={closeMenu}>✕</button>
+
+                <div className={styles.navBanner}>
+                    <div className={styles.navBannerBg} />
+                    <span className={styles.navBannerIcon}>📚</span>
+                    <div className={styles.navBannerText}>
+                        <strong>VPP Ti Anh</strong>
+                        <span>Văn phòng phẩm chất lượng</span>
+                    </div>
+                </div>
+
+                <div className={styles.navLinksSection}>
+                    {navLinks.map((link) => (
+                        <a key={link.label} href={link.href} className={styles.mobileNavLink} onClick={closeMenu}>
+                            {link.label}
+                        </a>
+                    ))}
+                </div>
+
+                <div className={styles.navFooter}>
+                    <span>📞 Liên hệ đặt hàng</span>
+                    <span>🕐 8:00 – 20:00 mỗi ngày</span>
+                </div>
+            </nav>
+
+            {/* Overlay — NGOÀI header, click để đóng menu */}
+            {menuOpen && <div className={styles.navOverlay} onClick={closeMenu} aria-hidden="true" />}
         </>
     );
 }
