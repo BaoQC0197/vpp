@@ -16,8 +16,17 @@ import EditModal from './components/EditModal';
 import CartDrawer from './components/CartDrawer';
 import OrderModal from './components/OrderModal';
 import FloatButtons from './components/FloatButtons';
+import ConfirmModal from './components/ConfirmModal';
 import styles from './App.module.css';
 import logoImg from './assets/logo.png';
+
+interface ConfirmState {
+    open: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant?: 'danger' | 'warning' | 'info';
+}
 
 export default function App() {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -29,13 +38,23 @@ export default function App() {
     const [cartOpen, setCartOpen] = useState(false);
     const [orderOpen, setOrderOpen] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const [confirm, setConfirm] = useState<ConfirmState>({
+        open: false,
+        title: '',
+        message: '',
+        onConfirm: () => { },
+    });
 
     const { items, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCart();
 
     // Load products
     const loadProducts = useCallback(async () => {
+        setIsLoading(true);
         const data = await getProducts();
         setProducts(data);
+        setIsLoading(false);
     }, []);
 
     // Load categories from DB
@@ -76,9 +95,17 @@ export default function App() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('Bạn có chắc muốn xoá sản phẩm này?')) return;
-        await deleteProduct(id);
-        await loadProducts();
+        setConfirm({
+            open: true,
+            title: 'Xoá sản phẩm',
+            message: 'Bạn có chắc muốn xoá sản phẩm này? Hành động này không thể hoàn tác.',
+            variant: 'danger',
+            onConfirm: async () => {
+                setConfirm(c => ({ ...c, open: false }));
+                await deleteProduct(id);
+                await loadProducts();
+            },
+        });
     };
 
     const handleEdit = async (id: number) => {
@@ -113,6 +140,12 @@ export default function App() {
         setOrderOpen(false);
         setOrderSuccess(true);
         setTimeout(() => setOrderSuccess(false), 4000);
+    };
+
+    // Reset filters
+    const handleResetFilter = () => {
+        setActiveCategory('all');
+        setSearchQuery('');
     };
 
     // Filter
@@ -154,6 +187,8 @@ export default function App() {
                     onDelete={handleDelete}
                     onAddToCart={handleAddToCart}
                     searchQuery={searchQuery}
+                    isLoading={isLoading}
+                    onResetFilter={handleResetFilter}
                 />
             </main>
 
@@ -169,6 +204,7 @@ export default function App() {
             {editingProduct && (
                 <EditModal
                     product={editingProduct}
+                    categories={categories}
                     onSave={handleUpdate}
                     onClose={() => setEditingProduct(null)}
                 />
@@ -182,6 +218,7 @@ export default function App() {
                 onUpdateQuantity={updateQuantity}
                 onRemove={removeFromCart}
                 onCheckout={handleCheckout}
+                onClearCart={clearCart}
             />
 
             {orderOpen && (
@@ -196,8 +233,20 @@ export default function App() {
             {/* Order success toast */}
             {orderSuccess && (
                 <div className={styles.orderToast}>
-                    ✅ Đặt hàng thành công! Chúng tôi sẽ liên hệ sớm.
+                    <span className={styles.orderToastIcon}>✅</span>
+                    Đặt hàng thành công! Chúng tôi sẽ liên hệ sớm.
                 </div>
+            )}
+
+            {/* Confirm modal (replaces window.confirm) */}
+            {confirm.open && (
+                <ConfirmModal
+                    title={confirm.title}
+                    message={confirm.message}
+                    variant={confirm.variant}
+                    onConfirm={confirm.onConfirm}
+                    onCancel={() => setConfirm(c => ({ ...c, open: false }))}
+                />
             )}
 
             <FloatButtons />

@@ -1,10 +1,10 @@
 /* CategoryBar.module.css */
 
 .categoryBar {
-    max-width: 1200px;
+    max-width: 1800px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 clamp(20px, 2.5%, 60px);
 }
 
 .categoryList {
@@ -80,9 +80,10 @@
     }
 
     .categoryList {
-        padding: 12px 24px;
-        /* Matches .container padding for alignment */
-        gap: 10px;
+        padding: 10px clamp(20px, 2.5%, 60px);
+        gap: 8px;
+        align-items: center;
+        border-bottom: 1px solid var(--color-border);
     }
 
     .categoryList::-webkit-scrollbar {
@@ -90,13 +91,18 @@
     }
 
     .categoryPill {
-        padding: 7px 12px;
+        padding: 7px 14px;
         font-size: 13px;
+        line-height: 1.4;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
     }
 
     .catIcon {
         display: inline-block;
         margin-right: 4px;
+        line-height: 1;
     }
 }

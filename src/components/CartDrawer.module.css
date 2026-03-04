@@ -60,10 +60,55 @@
     align-items: center;
     justify-content: center;
     color: var(--color-text-muted);
+    flex-shrink: 0;
 }
 
 .cartCloseBtn:hover {
     background: var(--color-border);
+}
+
+.cartHeaderActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.clearCartBtn {
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid #fca5a5;
+    background: #fef2f2;
+    color: #ef4444;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.clearCartBtn:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+.clearCartBtn.confirmClear {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .cartDrawerBody {

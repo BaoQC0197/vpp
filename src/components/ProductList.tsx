@@ -2,9 +2,11 @@
 import { useState, useEffect } from 'react';
 import type { Product } from '../types/product';
 import ProductCard from './ProductCard';
+import SkeletonCard from './SkeletonCard';
 import styles from './ProductList.module.css';
 
 const PAGE_SIZE = 8;
+const SKELETON_COUNT = 8;
 
 interface ProductListProps {
     products: Product[];
@@ -13,21 +15,48 @@ interface ProductListProps {
     onDelete: (id: number) => void;
     onAddToCart: (product: Product) => void;
     searchQuery?: string;
+    isLoading?: boolean;
+    onResetFilter?: () => void;
 }
 
-export default function ProductList({ products, isAdmin, onEdit, onDelete, onAddToCart, searchQuery }: ProductListProps) {
+export default function ProductList({ products, isAdmin, onEdit, onDelete, onAddToCart, searchQuery, isLoading, onResetFilter }: ProductListProps) {
     const [page, setPage] = useState(1);
 
     useEffect(() => { setPage(1); }, [products]);
 
+    // Skeleton loading state
+    if (isLoading) {
+        return (
+            <div id="product-list">
+                <div className={styles.productGrid}>
+                    {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+                        <SkeletonCard key={i} />
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
     if (products.length === 0) {
         return (
             <div id="product-list" className={styles.emptyState}>
-                <span className={styles.emptyIcon}>🔍</span>
+                <span className={styles.emptyIcon}>{searchQuery?.trim() ? '🔍' : '📦'}</span>
                 {searchQuery?.trim() ? (
-                    <p>Không tìm thấy sản phẩm nào với từ khoá "<strong>{searchQuery}</strong>".</p>
+                    <>
+                        <p>Không tìm thấy sản phẩm nào với từ khoá "<strong>{searchQuery}</strong>".</p>
+                        <button className={styles.emptyResetBtn} onClick={onResetFilter}>
+                            ✕ Xem tất cả sản phẩm
+                        </button>
+                    </>
                 ) : (
-                    <p>Không có sản phẩm nào trong danh mục này.</p>
+                    <>
+                        <p>Không có sản phẩm nào trong danh mục này.</p>
+                        {onResetFilter && (
+                            <button className={styles.emptyResetBtn} onClick={onResetFilter}>
+                                ← Xem tất cả sản phẩm
+                            </button>
+                        )}
+                    </>
                 )}
             </div>
         );

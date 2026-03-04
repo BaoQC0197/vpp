@@ -8,17 +8,24 @@
     top: 0;
     z-index: 500;
     box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.header.scrolled {
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+    border-bottom-color: rgba(16, 185, 129, 0.15);
 }
 
 .headerInner {
-    max-width: 1200px;
+    max-width: 1800px;
     width: 100%;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 12px 24px;
+    padding: 12px clamp(20px, 2.5%, 60px);
 }
 
 /* Logo */

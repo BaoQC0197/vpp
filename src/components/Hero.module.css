@@ -112,9 +112,9 @@
 /* Image carousel */
 .heroImageWrap {
     position: relative;
-    flex: 1 1 0;
+    flex: 1.4 1 0;
     min-width: 0;
-    max-width: 640px;
+    max-width: 800px;
     display: flex;
     align-items: stretch;
     justify-content: center;
@@ -257,11 +257,53 @@
     background: #e2e8f0;
 }
 
-/* Responsive */
+.heroScrollBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 9px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: all 0.2s ease;
+    animation: fadeSlideIn 0.3s ease;
+}
+
+.heroScrollBtn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+}
+
+.heroScrollBtnMobile {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 900px) {
     .heroInner {
         flex-direction: column;
         text-align: center;
+        gap: 16px;
     }
 
     .heroContent {
@@ -275,9 +317,9 @@
 
     .heroImageWrap {
         flex: none;
-        width: 100%;
-        max-width: 640px;
-        margin: 20px auto 0;
+        width: calc(100% + 0px);
+        max-width: 100%;
+        margin: 0 auto;
     }
 
     .heroSearchDesktop {
@@ -288,13 +330,13 @@
         display: flex;
         max-width: 100%;
         width: 100%;
-        margin-top: 20px;
+        margin-top: 16px;
     }
 }
 
 @media (max-width: 768px) {
     .hero {
-        padding: 56px 0 48px;
+        padding: 40px 0 28px;
     }
 
     .heroTitle {
@@ -303,6 +345,16 @@
 
     .heroSubtitle {
         font-size: 14px;
+    }
+
+    .heroImageWrap {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .heroCarousel {
+        border-radius: 0;
+        box-shadow: none;
     }
 }
 

@@ -1,35 +1,109 @@
 /* FloatButtons.module.css */
 
-.zaloBtn,
-.hotlineBtn {
+.floatGroup {
     position: fixed;
     right: 20px;
+    bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 700;
+    align-items: flex-end;
+}
+
+.floatBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border: none;
+    cursor: pointer;
+    background: #0068ff;
     color: white;
-    font-size: 20px;
-    box-shadow: var(--shadow-md);
+    font-size: 22px;
+    box-shadow: 0 4px 18px rgba(0, 104, 255, 0.4);
     text-decoration: none;
-    transition: transform var(--transition), box-shadow var(--transition);
-    z-index: 100;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, width 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
 }
 
-.zaloBtn:hover,
-.hotlineBtn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
+/* Tooltip label — hidden by default, shown on hover */
+.floatLabel {
+    display: none;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    padding-right: 4px;
 }
 
-.zaloBtn {
-    bottom: 160px;
-    background: #0ea5e9;
+.floatBtn:hover {
+    width: auto;
+    padding: 0 16px 0 12px;
+    border-radius: 999px;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 104, 255, 0.5);
+    gap: 8px;
+}
+
+.floatBtn:hover .floatLabel {
+    display: block;
 }
 
 .hotlineBtn {
-    bottom: 100px;
-    background: var(--color-danger);
+    background: #10b981;
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+}
+
+.hotlineBtn:hover {
+    box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+}
+
+.topBtn {
+    background: #1e293b;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+    font-size: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity 0.3s ease, transform 0.3s ease, width 0.3s ease, box-shadow 0.2s ease;
+}
+
+.topBtn.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.topBtn:hover {
+    background: #334155;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 480px) {
+    .floatGroup {
+        right: 14px;
+        bottom: 18px;
+        gap: 8px;
+    }
+
+    .floatBtn {
+        width: 46px;
+        height: 46px;
+        font-size: 20px;
+    }
+
+    /* Disable label expand on touch */
+    .floatBtn:hover {
+        width: 46px;
+        padding: 0;
+        border-radius: 50%;
+    }
+
+    .floatBtn:hover .floatLabel {
+        display: none;
+    }
 }

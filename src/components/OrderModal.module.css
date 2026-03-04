@@ -115,8 +115,41 @@
 .orderSummaryItem {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 13px;
     color: var(--color-text);
+    gap: 8px;
+}
+
+.orderSummaryItemLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.orderSummaryImg {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.orderSummaryName {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.orderSummaryPrice {
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .orderSummaryTotal {
@@ -178,6 +211,109 @@
     border-radius: var(--radius-sm);
     padding: 10px 14px;
     font-size: 13px;
+}
+
+/* Payment method */
+.paymentOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.paymentOption {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: white;
+    text-align: left;
+    transition: all 0.2s;
+    cursor: pointer;
+    width: 100%;
+}
+
+.paymentOption:hover {
+    border-color: var(--color-primary-light);
+    background: #f0fdf4;
+}
+
+.paymentOption.selected {
+    border-color: var(--color-primary);
+    background: #f0fdf4;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, .1);
+}
+
+.paymentIcon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.paymentOption div {
+    flex: 1;
+}
+
+.paymentOption strong {
+    display: block;
+    font-size: 14px;
+    color: var(--color-text);
+}
+
+.paymentOption span:not(.paymentIcon):not(.paymentCheck) {
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.paymentCheck {
+    font-size: 16px;
+    color: var(--color-primary);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.bankInfo {
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bankInfoTitle {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--color-primary-dark);
+    margin-bottom: 4px;
+}
+
+.bankInfoRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    gap: 8px;
+}
+
+.bankInfoRow span {
+    color: var(--color-text-muted);
+}
+
+.bankAccount {
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--color-primary-dark);
+}
+
+.bankNote {
+    font-size: 12px;
+    color: #065f46;
+    background: #d1fae5;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-top: 4px;
+    line-height: 1.5;
 }
 
 /* Footer */

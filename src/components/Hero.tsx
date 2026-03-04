@@ -1,3 +1,4 @@
+// src/components/Hero.tsx
 import { useState, useEffect } from 'react';
 import styles from './Hero.module.css';
 
@@ -22,6 +23,10 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
         return () => clearInterval(interval);
     }, []);
 
+    const scrollToResults = () => {
+        document.getElementById('product-list')?.scrollIntoView({ behavior: 'smooth' });
+    };
+
     return (
         <section className={styles.hero} id="home">
             <div className={styles.heroBg} />
@@ -30,7 +35,7 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
                 <div className={styles.heroContent}>
                     <button
                         className={styles.heroBadge}
-                        onClick={() => document.getElementById('product-list')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={scrollToResults}
                     >
                         ✨ Khám phá ngay
                     </button>

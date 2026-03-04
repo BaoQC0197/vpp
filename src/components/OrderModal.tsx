@@ -11,11 +11,21 @@ interface OrderModalProps {
     onConfirm: () => void;
 }
 
+type PaymentMethod = 'cod' | 'bank_transfer';
+
+const BANK_INFO = {
+    bank: 'Vietcombank',
+    account: '1234567890',
+    name: 'NGUYEN THI ANH',
+    branch: 'Chi nhánh TP.HCM',
+};
+
 export default function OrderModal({ items, totalPrice, onClose, onConfirm }: OrderModalProps) {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [note, setNote] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod');
     const [errors, setErrors] = useState<{ name?: string; phone?: string; address?: string }>({});
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState('');
@@ -35,11 +45,12 @@ export default function OrderModal({ items, totalPrice, onClose, onConfirm }: Or
         setLoading(true);
         setApiError('');
         try {
+            const noteWithPayment = `[${paymentMethod === 'cod' ? 'COD' : 'Chuyển khoản'}]${note.trim() ? ' - ' + note.trim() : ''}`;
             const orderId = await createOrder({
                 customer_name: name.trim(),
                 customer_phone: phone.trim(),
                 address: address.trim(),
-                note: note.trim() || undefined,
+                note: noteWithPayment,
                 total_price: totalPrice,
                 items: items.map((i) => ({
                     product_id: i.product.id,
@@ -49,7 +60,6 @@ export default function OrderModal({ items, totalPrice, onClose, onConfirm }: Or
                 })),
             });
 
-            // Notify admin via Email (placeholder)
             sendEmailNotification({
                 id: orderId,
                 customer_name: name.trim(),
@@ -81,8 +91,11 @@ export default function OrderModal({ items, totalPrice, onClose, onConfirm }: Or
                         <ul className={styles.orderSummaryList}>
                             {items.map(({ product, quantity }) => (
                                 <li key={product.id} className={styles.orderSummaryItem}>
-                                    <span>{product.name} × {quantity}</span>
-                                    <span>{(product.price * quantity).toLocaleString('vi-VN')} đ</span>
+                                    <div className={styles.orderSummaryItemLeft}>
+                                        <img src={product.image} alt={product.name} className={styles.orderSummaryImg} />
+                                        <span className={styles.orderSummaryName}>{product.name} × {quantity}</span>
+                                    </div>
+                                    <span className={styles.orderSummaryPrice}>{(product.price * quantity).toLocaleString('vi-VN')} đ</span>
                                 </li>
                             ))}
                         </ul>
@@ -117,8 +130,51 @@ export default function OrderModal({ items, totalPrice, onClose, onConfirm }: Or
                         <div className={styles.orderField}>
                             <label>Ghi chú (tuỳ chọn)</label>
                             <textarea placeholder="Ghi chú thêm về đơn hàng..." value={note}
-                                onChange={(e) => setNote(e.target.value)} rows={3} />
+                                onChange={(e) => setNote(e.target.value)} rows={2} />
                         </div>
+
+                        {/* Payment method */}
+                        <div className={styles.orderField}>
+                            <label>Phương thức thanh toán</label>
+                            <div className={styles.paymentOptions}>
+                                <button
+                                    type="button"
+                                    className={`${styles.paymentOption}${paymentMethod === 'cod' ? ' ' + styles.selected : ''}`}
+                                    onClick={() => setPaymentMethod('cod')}
+                                >
+                                    <span className={styles.paymentIcon}>💵</span>
+                                    <div>
+                                        <strong>Tiền mặt (COD)</strong>
+                                        <span>Thanh toán khi nhận hàng</span>
+                                    </div>
+                                    {paymentMethod === 'cod' && <span className={styles.paymentCheck}>✓</span>}
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${styles.paymentOption}${paymentMethod === 'bank_transfer' ? ' ' + styles.selected : ''}`}
+                                    onClick={() => setPaymentMethod('bank_transfer')}
+                                >
+                                    <span className={styles.paymentIcon}>🏦</span>
+                                    <div>
+                                        <strong>Chuyển khoản</strong>
+                                        <span>Ngân hàng / Ví điện tử</span>
+                                    </div>
+                                    {paymentMethod === 'bank_transfer' && <span className={styles.paymentCheck}>✓</span>}
+                                </button>
+                            </div>
+                        </div>
+
+                        {paymentMethod === 'bank_transfer' && (
+                            <div className={styles.bankInfo}>
+                                <p className={styles.bankInfoTitle}>💳 Thông tin chuyển khoản</p>
+                                <div className={styles.bankInfoRow}><span>Ngân hàng:</span><strong>{BANK_INFO.bank}</strong></div>
+                                <div className={styles.bankInfoRow}><span>Số tài khoản:</span><strong className={styles.bankAccount}>{BANK_INFO.account}</strong></div>
+                                <div className={styles.bankInfoRow}><span>Chủ tài khoản:</span><strong>{BANK_INFO.name}</strong></div>
+                                <div className={styles.bankInfoRow}><span>Chi nhánh:</span><strong>{BANK_INFO.branch}</strong></div>
+                                <p className={styles.bankNote}>📌 Ghi chú chuyển khoản: <strong>Tên bạn + số điện thoại</strong></p>
+                            </div>
+                        )}
+
                         {apiError && <div className={styles.orderApiError}>⚠️ {apiError}</div>}
                     </div>
                 </div>

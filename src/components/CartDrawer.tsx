@@ -1,4 +1,5 @@
 // src/components/CartDrawer.tsx
+import { useState } from 'react';
 import type { CartItem } from '../hooks/useCart';
 import styles from './CartDrawer.module.css';
 
@@ -10,9 +11,22 @@ interface CartDrawerProps {
     onUpdateQuantity: (productId: number, quantity: number) => void;
     onRemove: (productId: number) => void;
     onCheckout: () => void;
+    onClearCart: () => void;
 }
 
-export default function CartDrawer({ open, items, totalPrice, onClose, onUpdateQuantity, onRemove, onCheckout }: CartDrawerProps) {
+export default function CartDrawer({ open, items, totalPrice, onClose, onUpdateQuantity, onRemove, onCheckout, onClearCart }: CartDrawerProps) {
+    const [confirmClear, setConfirmClear] = useState(false);
+
+    const handleClearCart = () => {
+        if (confirmClear) {
+            onClearCart();
+            setConfirmClear(false);
+        } else {
+            setConfirmClear(true);
+            setTimeout(() => setConfirmClear(false), 3000);
+        }
+    };
+
     return (
         <>
             <div className={`${styles.cartOverlay}${open ? ' ' + styles.visible : ''}`} onClick={onClose} />
@@ -20,7 +34,18 @@ export default function CartDrawer({ open, items, totalPrice, onClose, onUpdateQ
             <aside className={`${styles.cartDrawer}${open ? ' ' + styles.open : ''}`}>
                 <div className={styles.cartDrawerHeader}>
                     <h2 className={styles.cartDrawerTitle}>🛒 Giỏ hàng</h2>
-                    <button className={styles.cartCloseBtn} onClick={onClose} aria-label="Đóng giỏ hàng">✕</button>
+                    <div className={styles.cartHeaderActions}>
+                        {items.length > 0 && (
+                            <button
+                                className={`${styles.clearCartBtn}${confirmClear ? ' ' + styles.confirmClear : ''}`}
+                                onClick={handleClearCart}
+                                title="Xoá hết giỏ hàng"
+                            >
+                                {confirmClear ? '⚠️ Xác nhận xoá hết?' : '🗑 Xoá hết'}
+                            </button>
+                        )}
+                        <button className={styles.cartCloseBtn} onClick={onClose} aria-label="Đóng giỏ hàng">✕</button>
+                    </div>
                 </div>
 
                 <div className={styles.cartDrawerBody}>

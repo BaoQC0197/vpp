@@ -1,8 +1,8 @@
 /* AdminDashboard.module.css */
 
 .adminDashboard {
-    width: 820px;
-    max-width: calc(100% - 48px);
+    width: 1000px;
+    max-width: calc(100% - 80px);
     margin: 48px auto 60px;
     border-radius: var(--radius-lg);
     background: var(--color-surface);
