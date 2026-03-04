@@ -1,25 +1,28 @@
 // src/components/CategoryBar.tsx
-import { buildCategoryList } from '../constants/categories';
+import type { Category } from '../types/category';
+import { FALLBACK_ALL } from '../constants/categories';
+import styles from './CategoryBar.module.css';
 
 interface CategoryBarProps {
     activeCategory: string;
     onFilter: (category: string) => void;
-    productCategories?: string[]; // danh mục thực tế từ các sản phẩm trong DB
+    categories: Category[];
 }
 
-export default function CategoryBar({ activeCategory, onFilter, productCategories = [] }: CategoryBarProps) {
-    const categories = buildCategoryList(productCategories);
+export default function CategoryBar({ activeCategory, onFilter, categories }: CategoryBarProps) {
+    const allOption = FALLBACK_ALL;
+    const fullList = [allOption, ...categories];
 
     return (
-        <div className="category-bar">
-            <div className="container category-list">
-                {categories.map((cat) => (
+        <div className={styles.categoryBar}>
+            <div className={styles.categoryList}>
+                {fullList.map((cat) => (
                     <button
                         key={cat.key}
-                        className={`category-pill${activeCategory === cat.key ? ' active' : ''}`}
+                        className={`${styles.categoryPill}${activeCategory === cat.key ? ' ' + styles.active : ''}`}
                         onClick={() => onFilter(cat.key)}
                     >
-                        <span className="cat-icon">{cat.icon}</span>
+                        <span className={styles.catIcon}>{cat.icon}</span>
                         {cat.label}
                     </button>
                 ))}

@@ -1,0 +1,495 @@
+/* AdminDashboard.module.css */
+
+.adminDashboard {
+    width: 820px;
+    max-width: calc(100% - 48px);
+    margin: 48px auto 60px;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+/* Tabs */
+.dashboardTabs {
+    display: flex;
+    border-bottom: 2px solid var(--color-border);
+    background: var(--color-bg);
+}
+
+.dashboardTab {
+    flex: 1;
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.dashboardTab:hover {
+    color: var(--color-primary);
+    background: #f0fdf4;
+}
+
+.dashboardTab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    background: var(--color-surface);
+}
+
+.dashboardContent {
+    padding: 28px;
+}
+
+/* Add Product Form */
+.addProductForm input,
+.addProductForm textarea,
+.addProductForm select {
+    width: 100%;
+    padding: 11px 14px;
+    margin-bottom: 4px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: all var(--transition);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--color-text);
+    background: white;
+}
+
+.addProductForm input:focus,
+.addProductForm textarea:focus,
+.addProductForm select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, .1);
+}
+
+.addProductForm textarea {
+    resize: none;
+    min-height: 80px;
+}
+
+.btnWrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.btnAdd {
+    padding: 12px 28px;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 3px 12px rgba(22, 163, 74, .3);
+}
+
+.btnAdd:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+}
+
+.btnAdd:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Order History */
+.orderHistory {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.orderLoading {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-muted);
+    font-size: 15px;
+}
+
+.orderEmptyState {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--color-text-muted);
+}
+
+.orderEmptyState span {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* Filter bar */
+.orderFilterBar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.orderFilterBtn {
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all var(--transition);
+}
+
+.orderFilterBtn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.orderFilterBtn.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+/* Order Card */
+.orderTableWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.orderCard {
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: box-shadow var(--transition);
+}
+
+.orderCard:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.orderCard.cancelled {
+    border-color: #fca5a5;
+    background: #fff5f5;
+}
+
+.orderCard.cancelled .orderCardHeader {
+    background: #fff5f5;
+}
+
+.orderCard.cancelled .orderCardHeader:hover {
+    background: #fee2e2;
+}
+
+.orderCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    background: var(--color-bg);
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.orderCardHeader:hover {
+    background: #f1f5f9;
+}
+
+.orderCardLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.orderId {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    background: var(--color-border);
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.orderCustomer {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.orderPhone {
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.orderCardRight {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+.orderStatusBadge {
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid;
+    flex-shrink: 0;
+}
+
+.orderTotal {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.orderDate {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+}
+
+.orderExpand {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+}
+
+/* Order detail */
+.orderCardDetail {
+    padding: 18px;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: white;
+}
+
+.orderDetailInfo {
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.orderItemsTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.orderItemsTable th {
+    text-align: left;
+    padding: 8px 10px;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.orderItemsTable td {
+    padding: 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.orderItemsTable tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status changer */
+.orderStatusChanger {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.orderStatusChanger>span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    padding-top: 8px;
+    flex-shrink: 0;
+}
+
+.orderStatusBtns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.orderStatusBtn {
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--color-border);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    transition: all var(--transition);
+}
+
+.orderStatusBtn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.orderStatusBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.orderStatusBtn.current {
+    cursor: default;
+}
+
+.orderStatusBtn.cancelBtn {
+    border-color: #fca5a5;
+    color: var(--color-danger);
+}
+
+.orderStatusBtn.cancelBtn:hover:not(:disabled) {
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger);
+}
+
+.orderRefreshBtn {
+    align-self: flex-end;
+    padding: 8px 18px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--color-border);
+    background: transparent;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+.orderRefreshBtn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.orderDeleteBtn {
+    background: none;
+    border: 1.5px solid #fca5a5;
+    border-radius: var(--radius-sm);
+    padding: 4px 8px;
+    font-size: 14px;
+    color: var(--color-danger);
+    flex-shrink: 0;
+    transition: all var(--transition);
+}
+
+.orderDeleteBtn:hover:not(:disabled) {
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger);
+}
+
+.orderDeleteBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.orderCancelledActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #fff5f5;
+    border: 1px solid #fca5a5;
+    border-radius: var(--radius-sm);
+    flex-wrap: wrap;
+}
+
+.orderCancelledNote {
+    font-size: 13px;
+    color: var(--color-danger);
+    font-weight: 500;
+}
+
+.orderDeleteFullBtn {
+    padding: 8px 16px;
+    background: var(--color-danger);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+    transition: all var(--transition);
+}
+
+.orderDeleteFullBtn:hover:not(:disabled) {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.orderDeleteFullBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Pagination (orders) */
+.orderPagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.orderListSummary {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .adminDashboard {
+        max-width: calc(100% - 32px);
+        margin: 32px auto 48px;
+    }
+
+    .dashboardContent {
+        padding: 20px 16px;
+    }
+
+    .orderCardHeader {
+        padding: 12px 14px;
+    }
+
+    .orderCardRight {
+        gap: 8px;
+    }
+
+    .orderDate {
+        display: none;
+    }
+
+    .orderStatusChanger {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .orderItemsTable {
+        font-size: 12px;
+    }
+}

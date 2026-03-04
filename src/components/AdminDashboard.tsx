@@ -2,14 +2,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ProductInput } from '../types/product';
 import type { Order, OrderStatus } from '../types/order';
+import type { Category } from '../types/category';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../types/order';
 import { getOrders, updateOrderStatus, deleteOrder } from '../api/orders';
 import ImageUpload from './ImageUpload';
-import { FIXED_CATEGORIES } from '../constants/categories';
+import CategoryManager from './CategoryManager';
+import styles from './AdminDashboard.module.css';
 
 interface AdminDashboardProps {
     onAdd: (product: ProductInput) => Promise<void>;
-    productCategories?: string[]; // danh mục thực tế từ DB
+    categories: Category[];
+    onRefreshCategories: () => void;
+    productCategoryCounts: Record<string, number>;
 }
 
 const ALL_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'delivering', 'delivered', 'cancelled'];
@@ -17,29 +21,24 @@ const ALL_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'delivering', 'deli
 interface FormErrors { name?: string; price?: string; image?: string; }
 
 // ===================== ADD PRODUCT FORM =====================
-const CUSTOM_KEY = '__custom__'; // sentinel value for "custom category" option
+const CUSTOM_KEY = '__custom__';
 
-function AddProductForm({ onAdd, productCategories = [] }: {
-    onAdd: (product: ProductInput) => Promise<void>;
-    productCategories?: string[];
-}) {
-    // Các danh mục custom từ DB chưa có trong FIXED_CATEGORIES
-    const fixedKeys = new Set(FIXED_CATEGORIES.map((c) => c.key));
-    const extraCategories = [...new Set(productCategories)].filter(
-        (k) => k && !fixedKeys.has(k)
-    );
+function AddProductForm({ onAdd, categories }: { onAdd: (product: ProductInput) => Promise<void>; categories: Category[] }) {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState('');
     const [description, setDescription] = useState('');
-    const [selectValue, setSelectValue] = useState('but'); // selected option in <select>
-    const [customCategory, setCustomCategory] = useState('');  // free-text khi chọn "Thêm mới"
+    const [selectValue, setSelectValue] = useState('');
+    const [customCategory, setCustomCategory] = useState('');
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
     const [showSuccess, setShowSuccess] = useState(false);
     const [imageKey, setImageKey] = useState(0);
 
-    // Danh mục thực tế sẽ được lưu (bỏ 'khac' nếu không phải custom)
+    useEffect(() => {
+        if (categories.length > 0 && !selectValue) setSelectValue(categories[0].key);
+    }, [categories, selectValue]);
+
     const effectiveCategory = selectValue === CUSTOM_KEY ? customCategory.trim() : selectValue;
 
     const validate = (): boolean => {
@@ -55,7 +54,7 @@ function AddProductForm({ onAdd, productCategories = [] }: {
 
     const resetForm = () => {
         setName(''); setPrice(''); setImage('');
-        setDescription(''); setSelectValue('but'); setCustomCategory('');
+        setDescription(''); setCustomCategory('');
         setErrors({}); setImageKey((k) => k + 1);
     };
 
@@ -64,8 +63,7 @@ function AddProductForm({ onAdd, productCategories = [] }: {
         setLoading(true);
         try {
             await onAdd({ name: name.trim(), price: parseInt(price), image, description, category: effectiveCategory });
-            resetForm();
-            setShowSuccess(true);
+            resetForm(); setShowSuccess(true);
         } catch {
             setErrors((p) => ({ ...p, name: 'Lỗi khi thêm sản phẩm, thử lại nhé!' }));
         } finally {
@@ -85,69 +83,35 @@ function AddProductForm({ onAdd, productCategories = [] }: {
                     </div>
                 </div>
             )}
-            <div className="add-product-form">
-                <input
-                    placeholder="Tên sản phẩm *"
-                    value={name}
-                    onChange={(e) => { setName(e.target.value); setErrors((p) => ({ ...p, name: undefined })); }}
-                    className={errors.name ? 'input-error' : ''}
-                />
+            <div className={styles.addProductForm}>
+                <input placeholder="Tên sản phẩm *" value={name}
+                    onChange={(e) => { setName(e.target.value); setErrors(p => ({ ...p, name: undefined })); }}
+                    className={errors.name ? 'input-error' : ''} />
                 {errors.name && <p className="field-error">{errors.name}</p>}
 
-                <input
-                    placeholder="Giá (VNĐ) *"
-                    type="number"
-                    value={price}
-                    onChange={(e) => { setPrice(e.target.value); setErrors((p) => ({ ...p, price: undefined })); }}
-                    className={errors.price ? 'input-error' : ''}
-                />
+                <input placeholder="Giá (VNĐ) *" type="number" value={price}
+                    onChange={(e) => { setPrice(e.target.value); setErrors(p => ({ ...p, price: undefined })); }}
+                    className={errors.price ? 'input-error' : ''} />
                 {errors.price && <p className="field-error">{errors.price}</p>}
 
                 <label className="field-label">Ảnh sản phẩm *</label>
-                <ImageUpload
-                    key={imageKey}
-                    onUploaded={(url) => { setImage(url); setErrors((p) => ({ ...p, image: undefined })); }}
-                />
+                <ImageUpload key={imageKey} onUploaded={(url) => { setImage(url); setErrors(p => ({ ...p, image: undefined })); }} />
                 {errors.image && <p className="field-error">{errors.image}</p>}
 
-                <textarea
-                    placeholder="Mô tả (không bắt buộc)"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
+                <textarea placeholder="Mô tả (không bắt buộc)" value={description} onChange={(e) => setDescription(e.target.value)} />
 
-                {/* Category selector */}
                 <label className="field-label">Danh mục</label>
-                <select
-                    value={selectValue}
-                    onChange={(e) => { setSelectValue(e.target.value); setCustomCategory(''); }}
-                >
-                    {FIXED_CATEGORIES.map((c) => (
-                        <option key={c.key} value={c.key}>{c.icon} {c.label}</option>
-                    ))}
-                    {extraCategories.length > 0 && (
-                        <optgroup label="── Danh mục đã tạo ──">
-                            {extraCategories.map((k) => (
-                                <option key={k} value={k}>🏷️ {k}</option>
-                            ))}
-                        </optgroup>
-                    )}
+                <select value={selectValue} onChange={(e) => { setSelectValue(e.target.value); setCustomCategory(''); }}>
+                    {categories.map(c => <option key={c.key} value={c.key}>{c.icon} {c.label}</option>)}
                     <option value={CUSTOM_KEY}>➕ Thêm danh mục mới...</option>
                 </select>
 
-                {/* Free-text input khi chọn "Thêm danh mục mới" */}
                 {selectValue === CUSTOM_KEY && (
-                    <input
-                        placeholder="Nhập tên danh mục mới *"
-                        value={customCategory}
-                        onChange={(e) => setCustomCategory(e.target.value)}
-                        autoFocus
-                        className="custom-category-input"
-                    />
+                    <input placeholder="Nhập tên danh mục mới *" value={customCategory} onChange={(e) => setCustomCategory(e.target.value)} autoFocus />
                 )}
 
-                <div className="btn-wrapper">
-                    <button onClick={handleAdd} className="btn-add" disabled={loading}>
+                <div className={styles.btnWrapper}>
+                    <button onClick={handleAdd} className={styles.btnAdd} disabled={loading}>
                         {loading ? 'Đang thêm...' : '+ Thêm sản phẩm'}
                     </button>
                 </div>
@@ -181,16 +145,10 @@ function OrderHistory() {
         setUpdatingId(orderId);
         try {
             await updateOrderStatus(orderId, newStatus);
-            setOrders((prev) =>
-                prev.map((o) => o.id === orderId ? { ...o, status: newStatus } : o)
-            );
-            // Collapse if changing to cancelled
+            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
             if (newStatus === 'cancelled') setExpandedId(null);
-        } catch {
-            alert('Cập nhật thất bại, thử lại nhé!');
-        } finally {
-            setUpdatingId(null);
-        }
+        } catch { alert('Cập nhật thất bại, thử lại nhé!'); }
+        finally { setUpdatingId(null); }
     };
 
     const handleDelete = async (orderId: number) => {
@@ -198,135 +156,80 @@ function OrderHistory() {
         setDeletingId(orderId);
         try {
             await deleteOrder(orderId);
-            setOrders((prev) => prev.filter((o) => o.id !== orderId));
-            // Adjust page if last item on page was deleted
-            const newFiltered = orders.filter((o) =>
-                o.id !== orderId && (filterStatus === 'all' || o.status === filterStatus)
-            );
+            setOrders(prev => prev.filter(o => o.id !== orderId));
+            const newFiltered = orders.filter(o => o.id !== orderId && (filterStatus === 'all' || o.status === filterStatus));
             const maxPage = Math.max(1, Math.ceil(newFiltered.length / PAGE_SIZE));
             if (currentPage > maxPage) setCurrentPage(maxPage);
-        } catch {
-            alert('Xoá thất bại, thử lại nhé!');
-        } finally {
-            setDeletingId(null);
-        }
+        } catch { alert('Xoá thất bại, thử lại nhé!'); }
+        finally { setDeletingId(null); }
     };
 
-    // Filter + paginate
-    const filteredOrders = filterStatus === 'all'
-        ? orders
-        : orders.filter((o) => o.status === filterStatus);
-
+    const filteredOrders = filterStatus === 'all' ? orders : orders.filter(o => o.status === filterStatus);
     const totalPages = Math.max(1, Math.ceil(filteredOrders.length / PAGE_SIZE));
     const pagedOrders = filteredOrders.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-    const handleFilterChange = (status: OrderStatus | 'all') => {
-        setFilterStatus(status);
-        setCurrentPage(1);
-        setExpandedId(null);
-    };
+    const handleFilterChange = (status: OrderStatus | 'all') => { setFilterStatus(status); setCurrentPage(1); setExpandedId(null); };
+    const formatDate = (iso: string) => new Date(iso).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' });
 
-    const formatDate = (iso: string) =>
-        new Date(iso).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' });
-
-    if (loading) return <div className="order-loading">⏳ Đang tải đơn hàng...</div>;
+    if (loading) return <div className={styles.orderLoading}>⏳ Đang tải đơn hàng...</div>;
 
     return (
-        <div className="order-history">
-            {/* Filter bar */}
-            <div className="order-filter-bar">
-                <button
-                    className={`order-filter-btn${filterStatus === 'all' ? ' active' : ''}`}
-                    onClick={() => handleFilterChange('all')}
-                >
+        <div className={styles.orderHistory}>
+            <div className={styles.orderFilterBar}>
+                <button className={`${styles.orderFilterBtn}${filterStatus === 'all' ? ' ' + styles.active : ''}`} onClick={() => handleFilterChange('all')}>
                     Tất cả ({orders.length})
                 </button>
-                {ALL_STATUSES.map((s) => (
-                    <button
-                        key={s}
-                        className={`order-filter-btn${filterStatus === s ? ' active' : ''}`}
-                        onClick={() => handleFilterChange(s)}
-                    >
-                        {ORDER_STATUS_LABELS[s]} ({orders.filter((o) => o.status === s).length})
+                {ALL_STATUSES.map(s => (
+                    <button key={s} className={`${styles.orderFilterBtn}${filterStatus === s ? ' ' + styles.active : ''}`} onClick={() => handleFilterChange(s)}>
+                        {ORDER_STATUS_LABELS[s]} ({orders.filter(o => o.status === s).length})
                     </button>
                 ))}
             </div>
 
             {filteredOrders.length === 0 ? (
-                <div className="order-empty-state">
-                    <span>📭</span>
-                    <p>Không có đơn hàng nào.</p>
-                </div>
+                <div className={styles.orderEmptyState}><span>📭</span><p>Không có đơn hàng nào.</p></div>
             ) : (
                 <>
-                    {/* Summary */}
-                    <p className="order-list-summary">
+                    <p className={styles.orderListSummary}>
                         Hiển thị {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filteredOrders.length)} / {filteredOrders.length} đơn hàng
                     </p>
 
-                    <div className="order-table-wrapper">
-                        {pagedOrders.map((order) => (
-                            <div key={order.id} className={`order-card${order.status === 'cancelled' ? ' cancelled' : ''}`}>
-                                {/* Order header row */}
-                                <div
-                                    className="order-card-header"
-                                    onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
-                                >
-                                    <div className="order-card-left">
-                                        <span className="order-id">#{order.id}</span>
+                    <div className={styles.orderTableWrapper}>
+                        {pagedOrders.map(order => (
+                            <div key={order.id} className={`${styles.orderCard}${order.status === 'cancelled' ? ' ' + styles.cancelled : ''}`}>
+                                <div className={styles.orderCardHeader} onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}>
+                                    <div className={styles.orderCardLeft}>
+                                        <span className={styles.orderId}>#{order.id}</span>
                                         <div>
-                                            <p className="order-customer">{order.customer_name}</p>
-                                            <p className="order-phone">{order.customer_phone}</p>
+                                            <p className={styles.orderCustomer}>{order.customer_name}</p>
+                                            <p className={styles.orderPhone}>{order.customer_phone}</p>
                                         </div>
                                     </div>
-                                    <div className="order-card-right">
-                                        <span
-                                            className="order-status-badge"
-                                            style={{
-                                                backgroundColor: ORDER_STATUS_COLORS[order.status] + '20',
-                                                color: ORDER_STATUS_COLORS[order.status],
-                                                borderColor: ORDER_STATUS_COLORS[order.status] + '40'
-                                            }}
-                                        >
+                                    <div className={styles.orderCardRight}>
+                                        <span className={styles.orderStatusBadge} style={{ backgroundColor: ORDER_STATUS_COLORS[order.status] + '20', color: ORDER_STATUS_COLORS[order.status], borderColor: ORDER_STATUS_COLORS[order.status] + '40' }}>
                                             {ORDER_STATUS_LABELS[order.status]}
                                         </span>
-                                        <span className="order-total">{order.total_price.toLocaleString('vi-VN')} đ</span>
-                                        <span className="order-date">{formatDate(order.created_at)}</span>
+                                        <span className={styles.orderTotal}>{order.total_price.toLocaleString('vi-VN')} đ</span>
+                                        <span className={styles.orderDate}>{formatDate(order.created_at)}</span>
 
-                                        {/* Nút xoá chỉ hiện khi đơn đã huỷ */}
                                         {order.status === 'cancelled' && (
-                                            <button
-                                                className="order-delete-btn"
-                                                onClick={(e) => { e.stopPropagation(); handleDelete(order.id); }}
-                                                disabled={deletingId === order.id}
-                                                title="Xoá đơn đã huỷ"
-                                            >
+                                            <button className={styles.orderDeleteBtn} onClick={(e) => { e.stopPropagation(); handleDelete(order.id); }} disabled={deletingId === order.id} title="Xoá đơn đã huỷ">
                                                 {deletingId === order.id ? '...' : '🗑'}
                                             </button>
                                         )}
-
-                                        <span className="order-expand">{expandedId === order.id ? '▲' : '▼'}</span>
+                                        <span className={styles.orderExpand}>{expandedId === order.id ? '▲' : '▼'}</span>
                                     </div>
                                 </div>
 
-                                {/* Expanded detail */}
                                 {expandedId === order.id && (
-                                    <div className="order-card-detail">
-                                        <div className="order-detail-info">
+                                    <div className={styles.orderCardDetail}>
+                                        <div className={styles.orderDetailInfo}>
                                             <p><strong>📍 Địa chỉ:</strong> {order.address}</p>
                                             {order.note && <p><strong>📝 Ghi chú:</strong> {order.note}</p>}
                                         </div>
 
-                                        {/* Items */}
-                                        <table className="order-items-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Sản phẩm</th>
-                                                    <th>Đơn giá</th>
-                                                    <th>SL</th>
-                                                    <th>Thành tiền</th>
-                                                </tr>
-                                            </thead>
+                                        <table className={styles.orderItemsTable}>
+                                            <thead><tr><th>Sản phẩm</th><th>Đơn giá</th><th>SL</th><th>Thành tiền</th></tr></thead>
                                             <tbody>
                                                 {order.order_items?.map((item, i) => (
                                                     <tr key={i}>
@@ -339,15 +242,13 @@ function OrderHistory() {
                                             </tbody>
                                         </table>
 
-                                        {/* Status changer — ẩn nếu đã huỷ */}
                                         {order.status !== 'cancelled' && (
-                                            <div className="order-status-changer">
+                                            <div className={styles.orderStatusChanger}>
                                                 <span>Đổi trạng thái:</span>
-                                                <div className="order-status-btns">
-                                                    {ALL_STATUSES.filter(s => s !== 'cancelled').map((s) => (
-                                                        <button
-                                                            key={s}
-                                                            className={`order-status-btn${order.status === s ? ' current' : ''}`}
+                                                <div className={styles.orderStatusBtns}>
+                                                    {ALL_STATUSES.filter(s => s !== 'cancelled').map(s => (
+                                                        <button key={s}
+                                                            className={`${styles.orderStatusBtn}${order.status === s ? ' ' + styles.current : ''}`}
                                                             style={order.status === s ? { backgroundColor: ORDER_STATUS_COLORS[s], color: 'white', borderColor: ORDER_STATUS_COLORS[s] } : {}}
                                                             onClick={() => handleStatusChange(order.id, s)}
                                                             disabled={order.status === s || updatingId === order.id}
@@ -355,27 +256,17 @@ function OrderHistory() {
                                                             {updatingId === order.id && order.status !== s ? '...' : ORDER_STATUS_LABELS[s]}
                                                         </button>
                                                     ))}
-                                                    {/* Nút Huỷ riêng — màu đỏ */}
-                                                    <button
-                                                        className="order-status-btn cancel-btn"
-                                                        onClick={() => handleStatusChange(order.id, 'cancelled')}
-                                                        disabled={updatingId === order.id}
-                                                    >
+                                                    <button className={`${styles.orderStatusBtn} ${styles.cancelBtn}`} onClick={() => handleStatusChange(order.id, 'cancelled')} disabled={updatingId === order.id}>
                                                         Huỷ đơn
                                                     </button>
                                                 </div>
                                             </div>
                                         )}
 
-                                        {/* Đơn đã huỷ — chỉ có nút xoá */}
                                         {order.status === 'cancelled' && (
-                                            <div className="order-cancelled-actions">
-                                                <p className="order-cancelled-note">⚠️ Đơn đã huỷ — không thể thay đổi trạng thái</p>
-                                                <button
-                                                    className="order-delete-full-btn"
-                                                    onClick={() => handleDelete(order.id)}
-                                                    disabled={deletingId === order.id}
-                                                >
+                                            <div className={styles.orderCancelledActions}>
+                                                <p className={styles.orderCancelledNote}>⚠️ Đơn đã huỷ — không thể thay đổi trạng thái</p>
+                                                <button className={styles.orderDeleteFullBtn} onClick={() => handleDelete(order.id)} disabled={deletingId === order.id}>
                                                     {deletingId === order.id ? 'Đang xoá...' : '🗑 Xoá đơn hàng này'}
                                                 </button>
                                             </div>
@@ -386,73 +277,42 @@ function OrderHistory() {
                         ))}
                     </div>
 
-                    {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="order-pagination">
-                            <button
-                                className="page-btn"
-                                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                                disabled={currentPage === 1}
-                            >
-                                ← Trước
-                            </button>
-
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                <button
-                                    key={page}
-                                    className={`page-btn${currentPage === page ? ' active' : ''}`}
-                                    onClick={() => setCurrentPage(page)}
-                                >
-                                    {page}
-                                </button>
+                        <div className={styles.orderPagination}>
+                            <button className={styles.pageBtn ?? ''} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>← Trước</button>
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(pg => (
+                                <button key={pg} className={`${styles.pageBtn}${currentPage === pg ? ' ' + styles.active : ''}`} onClick={() => setCurrentPage(pg)}>{pg}</button>
                             ))}
-
-                            <button
-                                className="page-btn"
-                                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                                disabled={currentPage === totalPages}
-                            >
-                                Sau →
-                            </button>
+                            <button className={styles.pageBtn ?? ''} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>Sau →</button>
                         </div>
                     )}
                 </>
             )}
 
-            <button className="order-refresh-btn" onClick={loadOrders}>🔄 Làm mới</button>
+            <button className={styles.orderRefreshBtn} onClick={loadOrders}>🔄 Làm mới</button>
         </div>
     );
 }
 
-
-
 // ===================== ADMIN DASHBOARD (Main) =====================
-type Tab = 'products' | 'orders';
+type Tab = 'products' | 'orders' | 'categories';
 
-export default function AdminDashboard({ onAdd, productCategories = [] }: AdminDashboardProps) {
+export default function AdminDashboard({ onAdd, categories, onRefreshCategories, productCategoryCounts }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState<Tab>('products');
 
     return (
-        <div className="admin-dashboard" id="admin-dashboard">
-            {/* Tab bar */}
-            <div className="dashboard-tabs">
-                <button
-                    className={`dashboard-tab${activeTab === 'products' ? ' active' : ''}`}
-                    onClick={() => setActiveTab('products')}
-                >
-                    📦 Quản lý sản phẩm
-                </button>
-                <button
-                    className={`dashboard-tab${activeTab === 'orders' ? ' active' : ''}`}
-                    onClick={() => setActiveTab('orders')}
-                >
-                    📋 Đơn hàng
-                </button>
+        <div className={styles.adminDashboard} id="admin-dashboard">
+            <div className={styles.dashboardTabs}>
+                <button className={`${styles.dashboardTab}${activeTab === 'products' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('products')}>📦 Quản lý sản phẩm</button>
+                <button className={`${styles.dashboardTab}${activeTab === 'categories' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('categories')}>🏷️ Danh mục</button>
+                <button className={`${styles.dashboardTab}${activeTab === 'orders' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('orders')}>📋 Đơn hàng</button>
             </div>
 
-            {/* Tab content */}
-            <div className="dashboard-content">
-                {activeTab === 'products' && <AddProductForm onAdd={onAdd} productCategories={productCategories} />}
+            <div className={styles.dashboardContent}>
+                {activeTab === 'products' && <AddProductForm onAdd={onAdd} categories={categories} />}
+                {activeTab === 'categories' && (
+                    <CategoryManager categories={categories} productCategoryCounts={productCategoryCounts} onRefresh={onRefreshCategories} />
+                )}
                 {activeTab === 'orders' && <OrderHistory />}
             </div>
         </div>

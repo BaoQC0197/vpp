@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import styles from './Hero.module.css';
 
 interface HeroProps {
     searchQuery: string;
@@ -22,56 +23,54 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
     }, []);
 
     return (
-        <section className="hero" id="home">
-            <div className="hero-bg" />
-            <div className="container hero-inner">
-                {/* Left: Text (title + subtitle only) */}
-                <div className="hero-content">
-                    <div className="hero-badge">🔥 Ưu đãi đặc biệt hôm nay</div>
-                    <h1 className="hero-title">
+        <section className={styles.hero} id="home">
+            <div className={styles.heroBg} />
+            <div className={`container ${styles.heroInner}`}>
+                {/* Left: Text */}
+                <div className={styles.heroContent}>
+                    <div className={styles.heroBadge}>🔥 Ưu đãi đặc biệt hôm nay</div>
+                    <h1 className={styles.heroTitle}>
                         Văn Phòng Phẩm<br />
-                        <span className="hero-title-accent">Chất Lượng Cao</span>
+                        <span className={styles.heroTitleAccent}>Chất Lượng Cao</span>
                     </h1>
-                    <p className="hero-subtitle">
+                    <p className={styles.heroSubtitle}>
                         Chuyên nhận đặt SGK giá tốt - Photo - In - Gói quà lưu niệm
                     </p>
 
-                    {/* Search bar — hidden on mobile, shown here on desktop */}
-                    <div className="hero-search hero-search-desktop">
-                        <span className="hero-search-icon">🔍</span>
+                    {/* Search — desktop */}
+                    <div className={`${styles.heroSearch} ${styles.heroSearchDesktop}`}>
+                        <span className={styles.heroSearchIcon}>🔍</span>
                         <input
                             type="text"
                             placeholder="Tìm bút, vở, sách giáo khoa..."
                             value={searchQuery}
                             onChange={(e) => onSearchChange(e.target.value)}
-                            className="hero-search-input"
+                            className={styles.heroSearchInput}
                         />
                         {searchQuery && (
-                            <button className="hero-search-clear" onClick={() => onSearchChange('')}>✕</button>
+                            <button className={styles.heroSearchClear} onClick={() => onSearchChange('')}>✕</button>
                         )}
                     </div>
                 </div>
 
                 {/* Right: Image carousel */}
-                <div className="hero-image-wrap">
-                    <div className="hero-image-glow" />
-                    <div className="hero-carousel">
+                <div className={styles.heroImageWrap}>
+                    <div className={styles.heroImageGlow} />
+                    <div className={styles.heroCarousel}>
                         {CAROUSEL_IMAGES.map((src, idx) => (
                             <img
                                 key={src}
                                 src={src}
                                 alt="Văn phòng phẩm và dịch vụ photo"
-                                className={`hero-carousel-item ${idx === currentImageIndex ? 'active' : ''}`}
-                                loading={idx === 0 ? "eager" : "lazy"}
+                                className={`${styles.heroCarouselItem}${idx === currentImageIndex ? ' ' + styles.active : ''}`}
+                                loading={idx === 0 ? 'eager' : 'lazy'}
                             />
                         ))}
-
-                        {/* Carousel Indicators */}
-                        <div className="hero-carousel-indicators">
+                        <div className={styles.heroCarouselIndicators}>
                             {CAROUSEL_IMAGES.map((_, idx) => (
                                 <button
                                     key={idx}
-                                    className={`hero-carousel-dot ${idx === currentImageIndex ? 'active' : ''}`}
+                                    className={`${styles.heroCarouselDot}${idx === currentImageIndex ? ' ' + styles.active : ''}`}
                                     onClick={() => setCurrentImageIndex(idx)}
                                     aria-label={`Go to slide ${idx + 1}`}
                                 />
@@ -80,18 +79,18 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
                     </div>
                 </div>
 
-                {/* Search bar — mobile only, shown BELOW the image */}
-                <div className="hero-search hero-search-mobile">
-                    <span className="hero-search-icon">🔍</span>
+                {/* Search — mobile */}
+                <div className={`${styles.heroSearch} ${styles.heroSearchMobile}`}>
+                    <span className={styles.heroSearchIcon}>🔍</span>
                     <input
                         type="text"
                         placeholder="Tìm bút, vở, sách giáo khoa..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="hero-search-input"
+                        className={styles.heroSearchInput}
                     />
                     {searchQuery && (
-                        <button className="hero-search-clear" onClick={() => onSearchChange('')}>✕</button>
+                        <button className={styles.heroSearchClear} onClick={() => onSearchChange('')}>✕</button>
                     )}
                 </div>
             </div>

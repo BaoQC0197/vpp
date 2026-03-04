@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import type { CartItem } from '../hooks/useCart';
 import { createOrder } from '../api/orders';
+import styles from './OrderModal.module.css';
 
 interface OrderModalProps {
     items: CartItem[];
@@ -57,88 +58,64 @@ export default function OrderModal({ items, totalPrice, onClose, onConfirm }: Or
     };
 
     return (
-        <div className="order-overlay" onClick={onClose}>
-            <div className="order-modal" onClick={(e) => e.stopPropagation()}>
-                <div className="order-modal-header">
+        <div className={styles.orderOverlay} onClick={onClose}>
+            <div className={styles.orderModal} onClick={(e) => e.stopPropagation()}>
+                <div className={styles.orderModalHeader}>
                     <h2>📋 Thông tin đặt hàng</h2>
-                    <button className="order-close-btn" onClick={onClose}>✕</button>
+                    <button className={styles.orderCloseBtn} onClick={onClose}>✕</button>
                 </div>
 
-                <div className="order-modal-body">
-                    {/* Order summary */}
-                    <div className="order-summary">
+                <div className={styles.orderModalBody}>
+                    <div className={styles.orderSummary}>
                         <h3>Đơn hàng ({items.length} sản phẩm)</h3>
-                        <ul className="order-summary-list">
+                        <ul className={styles.orderSummaryList}>
                             {items.map(({ product, quantity }) => (
-                                <li key={product.id} className="order-summary-item">
+                                <li key={product.id} className={styles.orderSummaryItem}>
                                     <span>{product.name} × {quantity}</span>
                                     <span>{(product.price * quantity).toLocaleString('vi-VN')} đ</span>
                                 </li>
                             ))}
                         </ul>
-                        <div className="order-summary-total">
+                        <div className={styles.orderSummaryTotal}>
                             <span>Tổng cộng</span>
                             <span>{totalPrice.toLocaleString('vi-VN')} đ</span>
                         </div>
                     </div>
 
-                    {/* Form */}
-                    <div className="order-form">
-                        <div className="order-field">
+                    <div className={styles.orderForm}>
+                        <div className={styles.orderField}>
                             <label>Họ và tên *</label>
-                            <input
-                                type="text"
-                                placeholder="Nguyễn Văn A"
-                                value={name}
+                            <input type="text" placeholder="Nguyễn Văn A" value={name}
                                 onChange={(e) => { setName(e.target.value); setErrors(p => ({ ...p, name: undefined })); }}
-                                className={errors.name ? 'input-error' : ''}
-                            />
+                                className={errors.name ? 'input-error' : ''} />
                             {errors.name && <p className="field-error">{errors.name}</p>}
                         </div>
-
-                        <div className="order-field">
+                        <div className={styles.orderField}>
                             <label>Số điện thoại *</label>
-                            <input
-                                type="tel"
-                                placeholder="0987 063 387"
-                                value={phone}
+                            <input type="tel" placeholder="0981 06 33 81" value={phone}
                                 onChange={(e) => { setPhone(e.target.value); setErrors(p => ({ ...p, phone: undefined })); }}
-                                className={errors.phone ? 'input-error' : ''}
-                            />
+                                className={errors.phone ? 'input-error' : ''} />
                             {errors.phone && <p className="field-error">{errors.phone}</p>}
                         </div>
-
-                        <div className="order-field">
+                        <div className={styles.orderField}>
                             <label>Địa chỉ giao hàng *</label>
-                            <input
-                                type="text"
-                                placeholder="Số nhà, đường, phường/xã, quận/huyện..."
-                                value={address}
+                            <input type="text" placeholder="Số nhà, đường, phường/xã, quận/huyện..." value={address}
                                 onChange={(e) => { setAddress(e.target.value); setErrors(p => ({ ...p, address: undefined })); }}
-                                className={errors.address ? 'input-error' : ''}
-                            />
+                                className={errors.address ? 'input-error' : ''} />
                             {errors.address && <p className="field-error">{errors.address}</p>}
                         </div>
-
-                        <div className="order-field">
+                        <div className={styles.orderField}>
                             <label>Ghi chú (tuỳ chọn)</label>
-                            <textarea
-                                placeholder="Ghi chú thêm về đơn hàng..."
-                                value={note}
-                                onChange={(e) => setNote(e.target.value)}
-                                rows={3}
-                            />
+                            <textarea placeholder="Ghi chú thêm về đơn hàng..." value={note}
+                                onChange={(e) => setNote(e.target.value)} rows={3} />
                         </div>
-
-                        {apiError && (
-                            <div className="order-api-error">⚠️ {apiError}</div>
-                        )}
+                        {apiError && <div className={styles.orderApiError}>⚠️ {apiError}</div>}
                     </div>
                 </div>
 
-                <div className="order-modal-footer">
-                    <button className="order-cancel-btn" onClick={onClose} disabled={loading}>Huỷ</button>
-                    <button className="order-confirm-btn" onClick={handleSubmit} disabled={loading}>
+                <div className={styles.orderModalFooter}>
+                    <button className={styles.orderCancelBtn} onClick={onClose} disabled={loading}>Huỷ</button>
+                    <button className={styles.orderConfirmBtn} onClick={handleSubmit} disabled={loading}>
                         {loading ? 'Đang đặt hàng...' : 'Xác nhận đặt hàng'}
                     </button>
                 </div>

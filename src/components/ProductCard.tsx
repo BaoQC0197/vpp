@@ -1,6 +1,7 @@
 // src/components/ProductCard.tsx
 import { useState } from 'react';
 import type { Product } from '../types/product';
+import styles from './ProductCard.module.css';
 
 const CATEGORY_LABELS: Record<string, string> = {
     but: 'Bút viết',
@@ -27,7 +28,7 @@ function Highlight({ text, query }: { text: string; query?: string }) {
     return (
         <>
             {text.slice(0, idx)}
-            <mark className="search-highlight">{text.slice(idx, idx + q.length)}</mark>
+            <mark className={styles.searchHighlight}>{text.slice(idx, idx + q.length)}</mark>
             {text.slice(idx + q.length)}
         </>
     );
@@ -47,23 +48,23 @@ export default function ProductCard({ product, isAdmin, onEdit, onDelete, onAddT
         : '';
 
     return (
-        <div className="card">
-            <div className="card-img-wrapper">
-                <img src={product.image} alt={product.name} className="card-img" />
-                {catLabel && <span className="card-badge">{catLabel}</span>}
+        <div className={styles.card}>
+            <div className={styles.cardImgWrapper}>
+                <img src={product.image} alt={product.name} className={styles.cardImg} />
+                {catLabel && <span className={styles.cardBadge}>{catLabel}</span>}
             </div>
-            <div className="card-content">
-                <h3 className="card-name">
+            <div className={styles.cardContent}>
+                <h3 className={styles.cardName}>
                     <Highlight text={product.name} query={searchQuery} />
                 </h3>
                 {product.description && (
-                    <p className="card-desc">{product.description}</p>
+                    <p className={styles.cardDesc}>{product.description}</p>
                 )}
-                <div className="card-footer">
-                    <div className="card-price">{product.price.toLocaleString('vi-VN')} đ</div>
+                <div className={styles.cardFooter}>
+                    <div className={styles.cardPrice}>{product.price.toLocaleString('vi-VN')} đ</div>
                     {!isAdmin && (
                         <button
-                            className={`btn-add-cart${added ? ' added' : ''}`}
+                            className={`${styles.btnAddCart}${added ? ' ' + styles.added : ''}`}
                             onClick={handleAddToCart}
                             disabled={added}
                         >
@@ -72,9 +73,9 @@ export default function ProductCard({ product, isAdmin, onEdit, onDelete, onAddT
                     )}
                 </div>
                 {isAdmin && (
-                    <div className="admin-actions">
-                        <button className="btn-edit" onClick={() => onEdit(product.id)}>✏️ Sửa</button>
-                        <button className="btn-delete" onClick={() => onDelete(product.id)}>🗑 Xoá</button>
+                    <div className={styles.adminActions}>
+                        <button className={styles.btnEdit} onClick={() => onEdit(product.id)}>✏️ Sửa</button>
+                        <button className={styles.btnDelete} onClick={() => onDelete(product.id)}>🗑 Xoá</button>
                     </div>
                 )}
             </div>

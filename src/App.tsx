@@ -2,7 +2,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, ADMIN_EMAIL } from './lib/supabase';
 import { getProducts, addProduct, deleteProduct, updateProduct, getProductById } from './api/products';
+import { getCategories } from './api/categories';
 import type { Product, ProductInput } from './types/product';
+import type { Category } from './types/category';
 import { useCart } from './hooks/useCart';
 
 import Header from './components/Header';
@@ -14,10 +16,12 @@ import EditModal from './components/EditModal';
 import CartDrawer from './components/CartDrawer';
 import OrderModal from './components/OrderModal';
 import FloatButtons from './components/FloatButtons';
+import styles from './App.module.css';
 
 export default function App() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [activeCategory, setActiveCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -33,15 +37,22 @@ export default function App() {
         setProducts(data);
     }, []);
 
+    // Load categories from DB
+    const loadCategories = useCallback(async () => {
+        const data = await getCategories();
+        setCategories(data);
+    }, []);
+
     useEffect(() => {
         const checkUser = async () => {
             const { data } = await supabase.auth.getUser();
             const user = data?.user;
             if (user && user.email === ADMIN_EMAIL) setIsAdmin(true);
             loadProducts();
+            loadCategories();
         };
         checkUser();
-    }, [loadProducts]);
+    }, [loadProducts, loadCategories]);
 
     // Auth
     const handleLogin = async (email: string, password: string) => {
@@ -57,7 +68,7 @@ export default function App() {
         await loadProducts();
     };
 
-    // CRUD
+    // CRUD Products
     const handleAdd = async (product: ProductInput) => {
         await addProduct(product);
         await loadProducts();
@@ -79,6 +90,11 @@ export default function App() {
         await updateProduct(id, data);
         await loadProducts();
     };
+
+    // Refresh both products and categories (called after category changes)
+    const handleRefreshCategories = useCallback(async () => {
+        await Promise.all([loadProducts(), loadCategories()]);
+    }, [loadProducts, loadCategories]);
 
     // Cart
     const handleAddToCart = (product: Product) => {
@@ -106,6 +122,13 @@ export default function App() {
         return matchCategory && matchSearch;
     });
 
+    // Product count per category (for CategoryManager)
+    const productCategoryCounts = products.reduce<Record<string, number>>((acc, p) => {
+        const key = p.category ?? 'khac';
+        acc[key] = (acc[key] ?? 0) + 1;
+        return acc;
+    }, {});
+
     return (
         <>
             <Header
@@ -119,7 +142,7 @@ export default function App() {
             <CategoryBar
                 activeCategory={activeCategory}
                 onFilter={(cat) => { setActiveCategory(cat); setSearchQuery(''); }}
-                productCategories={products.map((p) => p.category ?? '').filter(Boolean)}
+                categories={categories}
             />
 
             <main className="container" id="product-list">
@@ -133,7 +156,14 @@ export default function App() {
                 />
             </main>
 
-            {isAdmin && <AdminDashboard onAdd={handleAdd} productCategories={products.map((p) => p.category ?? '').filter(Boolean)} />}
+            {isAdmin && (
+                <AdminDashboard
+                    onAdd={handleAdd}
+                    categories={categories}
+                    onRefreshCategories={handleRefreshCategories}
+                    productCategoryCounts={productCategoryCounts}
+                />
+            )}
 
             {editingProduct && (
                 <EditModal
@@ -164,7 +194,7 @@ export default function App() {
 
             {/* Order success toast */}
             {orderSuccess && (
-                <div className="order-toast">
+                <div className={styles.orderToast}>
                     ✅ Đặt hàng thành công! Chúng tôi sẽ liên hệ sớm.
                 </div>
             )}
@@ -172,26 +202,26 @@ export default function App() {
             <FloatButtons />
 
             {/* Footer */}
-            <footer className="footer" id="contact">
-                <div className="container footer-inner">
-                    <div className="footer-brand">
-                        <div className="footer-logo">📚 VPP Ti Anh</div>
-                        <p className="footer-tagline">Đại lý văn phòng phẩm uy tín<br />Chất lượng cao, giá tốt nhất</p>
+            <footer className={styles.footer} id="contact">
+                <div className={`container ${styles.footerInner}`}>
+                    <div className={styles.footerBrand}>
+                        <div className={styles.footerLogo}>📚 VPP Ti Anh</div>
+                        <p className={styles.footerTagline}>Đại lý văn phòng phẩm uy tín<br />Chất lượng cao, giá tốt nhất</p>
                     </div>
-                    <div className="footer-links" id="about">
+                    <div className={styles.footerLinks} id="about">
                         <h4>Liên kết</h4>
                         <a href="#">Trang chủ</a>
                         <a href="#product-list">Sản phẩm</a>
                         <a href="#about">Giới thiệu</a>
                     </div>
-                    <div className="footer-contact">
+                    <div className={styles.footerContact}>
                         <h4>Liên hệ</h4>
-                        <p>📞 <a href="tel:0987063387">0987 063 387</a></p>
-                        <p>💬 <a href="https://zalo.me/0987063387" target="_blank" rel="noreferrer">Zalo: 0987 063 387</a></p>
+                        <p>📞 <a href="tel:0981063381">0981 063 381</a></p>
+                        <p>💬 <a href="https://zalo.me/0981063381" target="_blank" rel="noreferrer">Zalo: 0981 063 381</a></p>
                         <p>📍 TP. Hồ Chí Minh</p>
                     </div>
                 </div>
-                <div className="footer-bottom">
+                <div className={styles.footerBottom}>
                     <p>© 2026 VPP Ti Anh. All rights reserved.</p>
                 </div>
             </footer>

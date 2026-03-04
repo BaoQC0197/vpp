@@ -1,5 +1,6 @@
 // src/components/CartDrawer.tsx
 import type { CartItem } from '../hooks/useCart';
+import styles from './CartDrawer.module.css';
 
 interface CartDrawerProps {
     open: boolean;
@@ -11,64 +12,39 @@ interface CartDrawerProps {
     onCheckout: () => void;
 }
 
-export default function CartDrawer({
-    open,
-    items,
-    totalPrice,
-    onClose,
-    onUpdateQuantity,
-    onRemove,
-    onCheckout,
-}: CartDrawerProps) {
+export default function CartDrawer({ open, items, totalPrice, onClose, onUpdateQuantity, onRemove, onCheckout }: CartDrawerProps) {
     return (
         <>
-            {/* Overlay */}
-            <div
-                className={`cart-overlay${open ? ' visible' : ''}`}
-                onClick={onClose}
-            />
+            <div className={`${styles.cartOverlay}${open ? ' ' + styles.visible : ''}`} onClick={onClose} />
 
-            {/* Drawer */}
-            <aside className={`cart-drawer${open ? ' open' : ''}`}>
-                <div className="cart-drawer-header">
-                    <h2 className="cart-drawer-title">🛒 Giỏ hàng</h2>
-                    <button className="cart-close-btn" onClick={onClose} aria-label="Đóng giỏ hàng">✕</button>
+            <aside className={`${styles.cartDrawer}${open ? ' ' + styles.open : ''}`}>
+                <div className={styles.cartDrawerHeader}>
+                    <h2 className={styles.cartDrawerTitle}>🛒 Giỏ hàng</h2>
+                    <button className={styles.cartCloseBtn} onClick={onClose} aria-label="Đóng giỏ hàng">✕</button>
                 </div>
 
-                <div className="cart-drawer-body">
+                <div className={styles.cartDrawerBody}>
                     {items.length === 0 ? (
-                        <div className="cart-empty">
-                            <span className="cart-empty-icon">🛍️</span>
+                        <div className={styles.cartEmpty}>
+                            <span className={styles.cartEmptyIcon}>🛍️</span>
                             <p>Giỏ hàng đang trống</p>
-                            <button className="cart-continue-btn" onClick={onClose}>Tiếp tục mua sắm</button>
+                            <button className={styles.cartContinueBtn} onClick={onClose}>Tiếp tục mua sắm</button>
                         </div>
                     ) : (
-                        <ul className="cart-item-list">
+                        <ul className={styles.cartItemList}>
                             {items.map(({ product, quantity }) => (
-                                <li key={product.id} className="cart-item">
-                                    <img src={product.image} alt={product.name} className="cart-item-img" />
-                                    <div className="cart-item-info">
-                                        <p className="cart-item-name">{product.name}</p>
-                                        <p className="cart-item-price">
-                                            {(product.price * quantity).toLocaleString('vi-VN')} đ
-                                        </p>
-                                        <div className="cart-qty-row">
-                                            <button
-                                                className="cart-qty-btn"
-                                                onClick={() => onUpdateQuantity(product.id, quantity - 1)}
-                                            >−</button>
-                                            <span className="cart-qty-num">{quantity}</span>
-                                            <button
-                                                className="cart-qty-btn"
-                                                onClick={() => onUpdateQuantity(product.id, quantity + 1)}
-                                            >+</button>
+                                <li key={product.id} className={styles.cartItem}>
+                                    <img src={product.image} alt={product.name} className={styles.cartItemImg} />
+                                    <div className={styles.cartItemInfo}>
+                                        <p className={styles.cartItemName}>{product.name}</p>
+                                        <p className={styles.cartItemPrice}>{(product.price * quantity).toLocaleString('vi-VN')} đ</p>
+                                        <div className={styles.cartQtyRow}>
+                                            <button className={styles.cartQtyBtn} onClick={() => onUpdateQuantity(product.id, quantity - 1)}>−</button>
+                                            <span className={styles.cartQtyNum}>{quantity}</span>
+                                            <button className={styles.cartQtyBtn} onClick={() => onUpdateQuantity(product.id, quantity + 1)}>+</button>
                                         </div>
                                     </div>
-                                    <button
-                                        className="cart-remove-btn"
-                                        onClick={() => onRemove(product.id)}
-                                        aria-label="Xoá"
-                                    >🗑</button>
+                                    <button className={styles.cartRemoveBtn} onClick={() => onRemove(product.id)} aria-label="Xoá">🗑</button>
                                 </li>
                             ))}
                         </ul>
@@ -76,17 +52,13 @@ export default function CartDrawer({
                 </div>
 
                 {items.length > 0 && (
-                    <div className="cart-drawer-footer">
-                        <div className="cart-total-row">
+                    <div className={styles.cartDrawerFooter}>
+                        <div className={styles.cartTotalRow}>
                             <span>Tổng cộng</span>
-                            <span className="cart-total-price">{totalPrice.toLocaleString('vi-VN')} đ</span>
+                            <span className={styles.cartTotalPrice}>{totalPrice.toLocaleString('vi-VN')} đ</span>
                         </div>
-                        <button className="cart-checkout-btn" onClick={onCheckout}>
-                            Đặt hàng ngay →
-                        </button>
-                        <button className="cart-continue-btn" onClick={onClose}>
-                            Tiếp tục mua sắm
-                        </button>
+                        <button className={styles.cartCheckoutBtn} onClick={onCheckout}>Đặt hàng ngay →</button>
+                        <button className={styles.cartContinueBtn} onClick={onClose}>Tiếp tục mua sắm</button>
                     </div>
                 )}
             </aside>

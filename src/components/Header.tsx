@@ -1,5 +1,6 @@
 // src/components/Header.tsx
 import { useState } from 'react';
+import styles from './Header.module.css';
 
 interface HeaderProps {
     isAdmin: boolean;
@@ -21,9 +22,7 @@ export default function Header({ isAdmin, cartCount, onLogin, onLogout, onCartOp
         setLoading(true);
         try {
             await onLogin(email, password);
-            setEmail('');
-            setPassword('');
-            setAdminOpen(false);
+            setEmail(''); setPassword(''); setAdminOpen(false);
         } finally {
             setLoading(false);
         }
@@ -37,92 +36,80 @@ export default function Header({ isAdmin, cartCount, onLogin, onLogout, onCartOp
     ];
 
     return (
-        <header className="header">
-            <div className="header-inner container">
-                {/* Logo */}
-                <a href="#" className="logo">
-                    <span className="logo-icon">📚</span>
-                    <span className="logo-text">VPP <span className="logo-accent">Ti Anh</span></span>
-                </a>
+        <>
+            <header className={styles.header}>
+                <div className={styles.headerInner}>
+                    {/* Logo */}
+                    <a href="#" className={styles.logo}>
+                        <span className={styles.logoIcon}>📚</span>
+                        <span className={styles.logoText}>VPP <span className={styles.logoAccent}>Ti Anh</span></span>
+                    </a>
 
-                {/* Desktop Nav */}
-                <nav className={`nav-menu${menuOpen ? ' open' : ''}`}>
-                    <button className="nav-close" onClick={() => setMenuOpen(false)}>✕</button>
-                    {navLinks.map((link) => (
-                        <a key={link.label} href={link.href} className="nav-link" onClick={() => setMenuOpen(false)}>
-                            {link.label}
-                        </a>
-                    ))}
-                </nav>
+                    {/* Desktop Nav */}
+                    <nav className={`${styles.navMenu}${menuOpen ? ' ' + styles.open : ''}`}>
+                        <button className={styles.navClose} onClick={() => setMenuOpen(false)}>✕</button>
 
-                {/* Right side actions */}
-                <div className="header-actions">
-                    {/* Cart button */}
-                    <button className="cart-btn" onClick={onCartOpen} aria-label="Giỏ hàng">
-                        🛒
-                        {cartCount > 0 && (
-                            <span className="cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>
-                        )}
-                    </button>
-
-                    {/* Admin login area */}
-                    <div className="admin-dropdown-wrapper">
-                        {isAdmin ? (
-                            <div className="admin-info">
-                                <span className="admin-greeting">👋 Admin</span>
-                                <button className="btn-logout" onClick={onLogout}>Đăng xuất</button>
+                        <div className={styles.navBanner}>
+                            <div className={styles.navBannerBg} />
+                            <span className={styles.navBannerIcon}>📚</span>
+                            <div className={styles.navBannerText}>
+                                <strong>VPP Ti Anh</strong>
+                                <span>Văn phòng phẩm chất lượng</span>
                             </div>
-                        ) : (
-                            <>
-                                <button
-                                    className="btn-admin-toggle"
-                                    onClick={() => setAdminOpen((v) => !v)}
-                                    title="Đăng nhập Admin"
-                                >
-                                    🔑
-                                </button>
-                                {adminOpen && (
-                                    <div className="admin-dropdown">
-                                        <p className="admin-dropdown-title">Đăng nhập Admin</p>
-                                        <input
-                                            type="email"
-                                            placeholder="Email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                        />
-                                        <input
-                                            type="password"
-                                            placeholder="Mật khẩu"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
-                                        />
-                                        <button
-                                            className="btn-login-submit"
-                                            onClick={handleLogin}
-                                            disabled={loading}
-                                        >
-                                            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                                        </button>
-                                    </div>
-                                )}
-                            </>
-                        )}
+                        </div>
+
+                        <div className={styles.navLinksSection}>
+                            {navLinks.map((link) => (
+                                <a key={link.label} href={link.href} className={styles.navLink} onClick={() => setMenuOpen(false)}>
+                                    {link.label}
+                                </a>
+                            ))}
+                        </div>
+
+                        <div className={styles.navFooter}>
+                            <span>📞 Liên hệ đặt hàng</span>
+                            <span>🕐 8:00 – 20:00 mỗi ngày</span>
+                        </div>
+                    </nav>
+
+                    {/* Right actions */}
+                    <div className={styles.headerActions}>
+                        <button className={styles.cartBtn} onClick={onCartOpen} aria-label="Giỏ hàng">
+                            🛒
+                            {cartCount > 0 && (
+                                <span className={styles.cartBadge}>{cartCount > 99 ? '99+' : cartCount}</span>
+                            )}
+                        </button>
+
+                        <div className={styles.adminDropdownWrapper}>
+                            {isAdmin ? (
+                                <div className={styles.adminInfo}>
+                                    <span className={styles.adminGreeting}>👋 Admin</span>
+                                    <button className={styles.btnLogout} onClick={onLogout}>Đăng xuất</button>
+                                </div>
+                            ) : (
+                                <>
+                                    <button className={styles.btnAdminToggle} onClick={() => setAdminOpen((v) => !v)} title="Đăng nhập Admin">🔑</button>
+                                    {adminOpen && (
+                                        <div className={styles.adminDropdown}>
+                                            <p className={styles.adminDropdownTitle}>Đăng nhập Admin</p>
+                                            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                            <input type="password" placeholder="Mật khẩu" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
+                                            <button className={styles.btnLoginSubmit} onClick={handleLogin} disabled={loading}>
+                                                {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+
+                        <button className={styles.hamburger} onClick={() => setMenuOpen(true)} aria-label="Mở menu">☰</button>
                     </div>
-
-                    {/* Hamburger */}
-                    <button
-                        className="hamburger"
-                        onClick={() => setMenuOpen(true)}
-                        aria-label="Mở menu"
-                    >
-                        ☰
-                    </button>
                 </div>
-            </div>
+            </header>
 
-            {/* Mobile overlay */}
-            {menuOpen && <div className="nav-overlay" onClick={() => setMenuOpen(false)} />}
-        </header>
+            {menuOpen && <div className={styles.navOverlay} onClick={() => setMenuOpen(false)} />}
+        </>
     );
 }

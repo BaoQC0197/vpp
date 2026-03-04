@@ -1,0 +1,160 @@
+/* ProductCard.module.css */
+
+.card {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.cardImgWrapper {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+}
+
+.cardImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+}
+
+.card:hover .cardImg {
+    transform: scale(1.06);
+}
+
+.cardBadge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--color-primary);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.3px;
+}
+
+.cardContent {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.cardName {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cardDesc {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+}
+
+.cardFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border);
+}
+
+.cardPrice {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.btnAddCart {
+    padding: 7px 14px;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all var(--transition);
+    flex-shrink: 0;
+}
+
+.btnAddCart:hover {
+    background: var(--color-primary-dark);
+    transform: scale(1.05);
+}
+
+.btnAddCart.added {
+    background: #15803d;
+    cursor: default;
+}
+
+/* Admin actions on card */
+.adminActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btnEdit {
+    padding: 5px 12px;
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 500;
+    flex: 1;
+}
+
+.btnEdit:hover {
+    background: #f0fdf4;
+}
+
+.btnDelete {
+    padding: 5px 12px;
+    border: 1.5px solid var(--color-danger);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-danger);
+    font-size: 12px;
+    font-weight: 500;
+    flex: 1;
+}
+
+.btnDelete:hover {
+    background: var(--color-danger-bg);
+}
+
+/* Search highlight (used inside card names) */
+.searchHighlight {
+    background: #fef08a;
+    color: #92400e;
+    border-radius: 3px;
+    padding: 0 2px;
+}
