@@ -1,7 +1,7 @@
 // src/App.tsx
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, ADMIN_EMAIL } from './lib/supabase';
-import { getProducts, addProduct, deleteProduct, updateProduct, getProductById } from './api/products';
+import { getProducts, addProduct, deleteProduct, updateProduct, getProductById, replaceProductImages } from './api/products';
 import { getCategories } from './api/categories';
 import type { Product, ProductInput } from './types/product';
 import type { Category } from './types/category';
@@ -17,6 +17,7 @@ import CartDrawer from './components/CartDrawer';
 import OrderModal from './components/OrderModal';
 import FloatButtons from './components/FloatButtons';
 import ConfirmModal from './components/ConfirmModal';
+import ProductDetailModal from './components/ProductDetailModal';
 import styles from './App.module.css';
 import logoImg from './assets/logo.png';
 
@@ -35,6 +36,7 @@ export default function App() {
     const [activeCategory, setActiveCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [detailProduct, setDetailProduct] = useState<Product | null>(null);
     const [cartOpen, setCartOpen] = useState(false);
     const [orderOpen, setOrderOpen] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
@@ -89,9 +91,10 @@ export default function App() {
     };
 
     // CRUD Products
-    const handleAdd = async (product: ProductInput) => {
-        await addProduct(product);
+    const handleAdd = async (product: ProductInput): Promise<number> => {
+        const id = await addProduct(product);
         await loadProducts();
+        return id;
     };
 
     const handleDelete = async (id: number) => {
@@ -114,8 +117,9 @@ export default function App() {
         setEditingProduct(product);
     };
 
-    const handleUpdate = async (id: number, data: Partial<Product>) => {
+    const handleUpdate = async (id: number, data: Partial<Product>, imageUrls: string[]) => {
         await updateProduct(id, data);
+        await replaceProductImages(id, imageUrls);
         await loadProducts();
     };
 
@@ -125,9 +129,16 @@ export default function App() {
     }, [loadProducts, loadCategories]);
 
     // Cart
-    const handleAddToCart = (product: Product) => {
-        addToCart(product);
+    const handleAddToCart = (product: Product, qty = 1) => {
+        for (let i = 0; i < qty; i++) addToCart(product);
         setCartOpen(true);
+    };
+
+    const handleBuyNow = (product: Product, qty = 1) => {
+        for (let i = 0; i < qty; i++) addToCart(product);
+        setDetailProduct(null);
+        setCartOpen(false);
+        setOrderOpen(true);
     };
 
     const handleCheckout = () => {
@@ -186,6 +197,7 @@ export default function App() {
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onAddToCart={handleAddToCart}
+                    onViewDetail={(p) => setDetailProduct(p)}
                     searchQuery={searchQuery}
                     isLoading={isLoading}
                     onResetFilter={handleResetFilter}
@@ -246,6 +258,18 @@ export default function App() {
                     variant={confirm.variant}
                     onConfirm={confirm.onConfirm}
                     onCancel={() => setConfirm(c => ({ ...c, open: false }))}
+                />
+            )}
+
+            {/* Product detail modal */}
+            {detailProduct && (
+                <ProductDetailModal
+                    product={detailProduct}
+                    allProducts={products}
+                    categories={categories}
+                    onClose={() => setDetailProduct(null)}
+                    onAddToCart={handleAddToCart}
+                    onBuyNow={handleBuyNow}
                 />
             )}
 

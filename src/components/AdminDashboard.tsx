@@ -5,12 +5,13 @@ import type { Order, OrderStatus } from '../types/order';
 import type { Category } from '../types/category';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../types/order';
 import { getOrders, updateOrderStatus, deleteOrder, markOrderAsRead } from '../api/orders';
-import ImageUpload from './ImageUpload';
+import { addProductImages } from '../api/products';
+import MultiImageUpload from './MultiImageUpload';
 import CategoryManager from './CategoryManager';
 import styles from './AdminDashboard.module.css';
 
 interface AdminDashboardProps {
-    onAdd: (product: ProductInput) => Promise<void>;
+    onAdd: (product: ProductInput) => Promise<number>;
     categories: Category[];
     onRefreshCategories: () => void;
     productCategoryCounts: Record<string, number>;
@@ -23,17 +24,16 @@ interface FormErrors { name?: string; price?: string; image?: string; }
 // ===================== ADD PRODUCT FORM =====================
 const CUSTOM_KEY = '__custom__';
 
-function AddProductForm({ onAdd, categories }: { onAdd: (product: ProductInput) => Promise<void>; categories: Category[] }) {
+function AddProductForm({ onAdd, categories }: { onAdd: (product: ProductInput) => Promise<number>; categories: Category[] }) {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');   // raw digits, e.g. "2000000"
-    const [image, setImage] = useState('');
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
     const [description, setDescription] = useState('');
     const [selectValue, setSelectValue] = useState('');
     const [customCategory, setCustomCategory] = useState('');
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
     const [showSuccess, setShowSuccess] = useState(false);
-    const [imageKey, setImageKey] = useState(0);
 
     useEffect(() => {
         if (categories.length > 0 && !selectValue) setSelectValue(categories[0].key);
@@ -46,23 +46,26 @@ function AddProductForm({ onAdd, categories }: { onAdd: (product: ProductInput) 
         if (!name.trim()) e.name = 'Vui lòng nhập tên sản phẩm';
         if (!price) e.price = 'Vui lòng nhập giá';
         else if (parseInt(price) <= 0) e.price = 'Giá không hợp lệ';
-        if (!image) e.image = 'Vui lòng upload ảnh sản phẩm';
+        if (!imageUrls.length) e.image = 'Vui lòng upload ít nhất 1 ảnh sản phẩm';
         if (selectValue === CUSTOM_KEY && !customCategory.trim()) e.name = (e.name ? e.name + ' | ' : '') + 'Vui lòng nhập tên danh mục mới';
         setErrors(e);
         return Object.keys(e).length === 0;
     };
 
     const resetForm = () => {
-        setName(''); setPrice(''); setImage('');
+        setName(''); setPrice(''); setImageUrls([]);
         setDescription(''); setCustomCategory('');
-        setErrors({}); setImageKey((k) => k + 1);
+        setErrors({});
     };
 
     const handleAdd = async () => {
         if (!validate()) return;
         setLoading(true);
         try {
-            await onAdd({ name: name.trim(), price: parseInt(price), image, description, category: effectiveCategory });
+            const primaryImage = imageUrls[0];
+            const newId = await onAdd({ name: name.trim(), price: parseInt(price), image: primaryImage, description, category: effectiveCategory });
+            // Save gallery images (position 0..n)
+            await addProductImages(newId, imageUrls);
             resetForm(); setShowSuccess(true);
         } catch {
             setErrors((p) => ({ ...p, name: 'Lỗi khi thêm sản phẩm, thử lại nhé!' }));
@@ -103,8 +106,8 @@ function AddProductForm({ onAdd, categories }: { onAdd: (product: ProductInput) 
                 />
                 {errors.price && <p className="field-error">{errors.price}</p>}
 
-                <label className="field-label">Ảnh sản phẩm *</label>
-                <ImageUpload key={imageKey} onUploaded={(url) => { setImage(url); setErrors(p => ({ ...p, image: undefined })); }} />
+                <label className="field-label">Ảnh sản phẩm * (ảnh đầu = ảnh chính)</label>
+                <MultiImageUpload urls={imageUrls} onChange={(urls) => { setImageUrls(urls); setErrors(p => ({ ...p, image: undefined })); }} />
                 {errors.image && <p className="field-error">{errors.image}</p>}
 
                 <textarea placeholder="Mô tả (không bắt buộc)" value={description} onChange={(e) => setDescription(e.target.value)} />

@@ -7,6 +7,7 @@ export interface Product {
     image: string;
     description: string;
     category?: string;
+    images?: string[]; // gallery images from product_images table
 }
 
-export type ProductInput = Omit<Product, 'id'>;
+export type ProductInput = Omit<Product, 'id' | 'images'>;

@@ -2,20 +2,20 @@
 import { useState, useEffect } from 'react';
 import type { Product } from '../types/product';
 import type { Category } from '../types/category';
-import ImageUpload from './ImageUpload';
+import MultiImageUpload from './MultiImageUpload';
 import styles from './EditModal.module.css';
 
 interface EditModalProps {
     product: Product | null;
     categories: Category[];
-    onSave: (id: number, data: Partial<Product>) => Promise<void>;
+    onSave: (id: number, data: Partial<Product>, imageUrls: string[]) => Promise<void>;
     onClose: () => void;
 }
 
 export default function EditModal({ product, categories, onSave, onClose }: EditModalProps) {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const [image, setImage] = useState('');
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
     const [errors, setErrors] = useState<{ name?: string; price?: string }>({});
@@ -25,7 +25,11 @@ export default function EditModal({ product, categories, onSave, onClose }: Edit
         if (product) {
             setName(product.name || '');
             setPrice(String(product.price || '').replace(/\D/g, ''));
-            setImage(product.image || '');
+            // merge primary image + gallery
+            const all = product.images && product.images.length > 0
+                ? product.images
+                : (product.image ? [product.image] : []);
+            setImageUrls([...new Set(all)]);
             setDescription(product.description || '');
             setCategory(product.category || (categories[0]?.key ?? ''));
         }
@@ -47,7 +51,8 @@ export default function EditModal({ product, categories, onSave, onClose }: Edit
         const parsedPrice = parseInt(price.replace(/\./g, ''), 10);
         setLoading(true);
         try {
-            await onSave(product.id, { name: name.trim(), price: parsedPrice, image, description, category });
+            const primaryImage = imageUrls[0] ?? '';
+            await onSave(product!.id, { name: name.trim(), price: parsedPrice, image: primaryImage, description, category }, imageUrls);
             onClose();
         } catch {
             setErrors(p => ({ ...p, name: 'Lỗi khi cập nhật sản phẩm. Thử lại nhé!' }));
@@ -97,8 +102,8 @@ export default function EditModal({ product, categories, onSave, onClose }: Edit
                     </div>
 
                     <div className={styles.formField}>
-                        <label className="field-label">Ảnh sản phẩm</label>
-                        <ImageUpload currentImageUrl={image} onUploaded={(url) => setImage(url)} />
+                        <label className="field-label">Ảnh sản phẩm (ảnh đầu tiên = ảnh chính)</label>
+                        <MultiImageUpload urls={imageUrls} onChange={setImageUrls} />
                     </div>
 
                     <div className={styles.formField}>

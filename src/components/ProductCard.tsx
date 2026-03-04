@@ -1,9 +1,7 @@
 // src/components/ProductCard.tsx
 import { useState } from 'react';
 import type { Product } from '../types/product';
-import ImageLightbox from './ImageLightbox';
 import styles from './ProductCard.module.css';
-
 
 interface ProductCardProps {
     product: Product;
@@ -11,6 +9,7 @@ interface ProductCardProps {
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
     onAddToCart: (product: Product) => void;
+    onViewDetail?: (product: Product) => void;
     searchQuery?: string;
 }
 
@@ -28,9 +27,8 @@ function Highlight({ text, query }: { text: string; query?: string }) {
     );
 }
 
-export default function ProductCard({ product, isAdmin, onEdit, onDelete, onAddToCart, searchQuery }: ProductCardProps) {
+export default function ProductCard({ product, isAdmin, onEdit, onDelete, onAddToCart, onViewDetail, searchQuery }: ProductCardProps) {
     const [added, setAdded] = useState(false);
-    const [lightboxOpen, setLightboxOpen] = useState(false);
 
     const handleAddToCart = () => {
         onAddToCart(product);
@@ -39,51 +37,47 @@ export default function ProductCard({ product, isAdmin, onEdit, onDelete, onAddT
     };
 
     return (
-        <>
-            <div className={styles.card}>
-                <div className={styles.cardImgWrapper} onClick={() => setLightboxOpen(true)} title="Xem ảnh lớn">
-                    <img src={product.image} alt={product.name} className={styles.cardImg} />
-                    <div className={styles.imgOverlay}>
-                        <span className={styles.imgZoomIcon}>🔍</span>
-                    </div>
-                </div>
-                <div className={styles.cardContent}>
-                    <h3 className={styles.cardName}>
-                        <Highlight text={product.name} query={searchQuery} />
-                    </h3>
-                    {product.description && (
-                        <p className={styles.cardDesc}>{product.description}</p>
-                    )}
-                    <div className={styles.cardFooter}>
-                        <div className={styles.cardPrice}>{product.price.toLocaleString('vi-VN')} đ</div>
-                        {!isAdmin && (
-                            <button
-                                className={`${styles.btnAddCart}${added ? ' ' + styles.added : ''}`}
-                                onClick={handleAddToCart}
-                                disabled={added}
-                            >
-                                {added ? '✓ Đã thêm' : '+ Giỏ'}
-                            </button>
-                        )}
-                    </div>
-                    {isAdmin && (
-                        <div className={styles.adminActions}>
-                            <button className={styles.btnEdit} onClick={() => onEdit(product.id)}>✏️ Sửa</button>
-                            <button className={styles.btnDelete} onClick={() => onDelete(product.id)}>🗑 Xoá</button>
-                        </div>
-                    )}
+        <div className={styles.card}>
+            <div
+                className={styles.cardImgWrapper}
+                onClick={() => onViewDetail?.(product)}
+                title="Xem chi tiết"
+            >
+                <img src={product.image} alt={product.name} className={styles.cardImg} />
+                <div className={styles.imgOverlay}>
+                    <span className={styles.imgZoomIcon}>🔍</span>
                 </div>
             </div>
-
-            {lightboxOpen && (
-                <ImageLightbox
-                    src={product.image}
-                    name={product.name}
-                    description={product.description}
-                    price={product.price}
-                    onClose={() => setLightboxOpen(false)}
-                />
-            )}
-        </>
+            <div className={styles.cardContent}>
+                <h3
+                    className={styles.cardName}
+                    onClick={() => onViewDetail?.(product)}
+                    style={{ cursor: onViewDetail ? 'pointer' : 'default' }}
+                >
+                    <Highlight text={product.name} query={searchQuery} />
+                </h3>
+                {product.description && (
+                    <p className={styles.cardDesc}>{product.description}</p>
+                )}
+                <div className={styles.cardFooter}>
+                    <div className={styles.cardPrice}>{product.price.toLocaleString('vi-VN')} đ</div>
+                    {!isAdmin && (
+                        <button
+                            className={`${styles.btnAddCart}${added ? ' ' + styles.added : ''}`}
+                            onClick={handleAddToCart}
+                            disabled={added}
+                        >
+                            {added ? '✓ Đã thêm' : '+ Giỏ'}
+                        </button>
+                    )}
+                </div>
+                {isAdmin && (
+                    <div className={styles.adminActions}>
+                        <button className={styles.btnEdit} onClick={() => onEdit(product.id)}>✏️ Sửa</button>
+                        <button className={styles.btnDelete} onClick={() => onDelete(product.id)}>🗑 Xoá</button>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }

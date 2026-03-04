@@ -14,12 +14,13 @@ interface ProductListProps {
     onEdit: (id: number) => void;
     onDelete: (id: number) => void;
     onAddToCart: (product: Product) => void;
+    onViewDetail?: (product: Product) => void;
     searchQuery?: string;
     isLoading?: boolean;
     onResetFilter?: () => void;
 }
 
-export default function ProductList({ products, isAdmin, onEdit, onDelete, onAddToCart, searchQuery, isLoading, onResetFilter }: ProductListProps) {
+export default function ProductList({ products, isAdmin, onEdit, onDelete, onAddToCart, onViewDetail, searchQuery, isLoading, onResetFilter }: ProductListProps) {
     const [page, setPage] = useState(1);
 
     useEffect(() => { setPage(1); }, [products]);
@@ -91,6 +92,7 @@ export default function ProductList({ products, isAdmin, onEdit, onDelete, onAdd
                         onEdit={onEdit}
                         onDelete={onDelete}
                         onAddToCart={onAddToCart}
+                        onViewDetail={onViewDetail}
                         searchQuery={searchQuery}
                     />
                 ))}
