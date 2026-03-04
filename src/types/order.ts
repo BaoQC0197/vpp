@@ -19,6 +19,7 @@ export interface Order {
     note?: string;
     total_price: number;
     status: OrderStatus;
+    is_read: boolean;
     created_at: string;
     order_items?: OrderItem[];
 }

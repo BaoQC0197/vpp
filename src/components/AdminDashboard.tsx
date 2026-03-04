@@ -4,7 +4,7 @@ import type { ProductInput } from '../types/product';
 import type { Order, OrderStatus } from '../types/order';
 import type { Category } from '../types/category';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../types/order';
-import { getOrders, updateOrderStatus, deleteOrder } from '../api/orders';
+import { getOrders, updateOrderStatus, deleteOrder, markOrderAsRead } from '../api/orders';
 import ImageUpload from './ImageUpload';
 import CategoryManager from './CategoryManager';
 import styles from './AdminDashboard.module.css';
@@ -150,6 +150,23 @@ function OrderHistory() {
 
     useEffect(() => { loadOrders(); }, [loadOrders]);
 
+    const handleExpandToggle = async (order: Order) => {
+        if (expandedId !== order.id) {
+            setExpandedId(order.id);
+            // Mark as read if it's unread
+            if (!order.is_read) {
+                try {
+                    await markOrderAsRead(order.id);
+                    setOrders(prev => prev.map(o => o.id === order.id ? { ...o, is_read: true } : o));
+                } catch (err) {
+                    console.error('Failed to mark order as read:', err);
+                }
+            }
+        } else {
+            setExpandedId(null);
+        }
+    };
+
     const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
         setUpdatingId(orderId);
         try {
@@ -205,10 +222,11 @@ function OrderHistory() {
 
                     <div className={styles.orderTableWrapper}>
                         {pagedOrders.map(order => (
-                            <div key={order.id} className={`${styles.orderCard}${order.status === 'cancelled' ? ' ' + styles.cancelled : ''}`}>
-                                <div className={styles.orderCardHeader} onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}>
+                            <div key={order.id} className={`${styles.orderCard}${order.status === 'cancelled' ? ' ' + styles.cancelled : ''}${!order.is_read ? ' ' + styles.unread : ''}`}>
+                                <div className={styles.orderCardHeader} onClick={() => handleExpandToggle(order)}>
                                     <div className={styles.orderCardLeft}>
                                         <span className={styles.orderId}>#{order.id}</span>
+                                        {!order.is_read && <span className={styles.newLabel}>MỚI</span>}
                                         <div>
                                             <p className={styles.orderCustomer}>{order.customer_name}</p>
                                             <p className={styles.orderPhone}>{order.customer_phone}</p>
@@ -308,13 +326,34 @@ type Tab = 'products' | 'orders' | 'categories';
 
 export default function AdminDashboard({ onAdd, categories, onRefreshCategories, productCategoryCounts }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState<Tab>('products');
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    // Sync unread count from OrderHistory or Poll roughly
+    // For simplicity, we can just load orders here or pass a callback
+    useEffect(() => {
+        const fetchUnread = async () => {
+            const orders = await getOrders();
+            const unread = orders.filter(o => !o.is_read).length;
+            setUnreadCount(unread);
+        };
+        fetchUnread();
+        // Poll every 30s for new orders
+        const timer = setInterval(fetchUnread, 30000);
+        return () => clearInterval(timer);
+    }, []);
+
+    // Also update unread count if we're in 'orders' tab and things change
+    // This is a bit decoupled but polling + initial load should work.
 
     return (
         <div className={styles.adminDashboard} id="admin-dashboard">
             <div className={styles.dashboardTabs}>
                 <button className={`${styles.dashboardTab}${activeTab === 'products' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('products')}>📦 Quản lý sản phẩm</button>
                 <button className={`${styles.dashboardTab}${activeTab === 'categories' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('categories')}>🏷️ Danh mục</button>
-                <button className={`${styles.dashboardTab}${activeTab === 'orders' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('orders')}>📋 Đơn hàng</button>
+                <button className={`${styles.dashboardTab}${activeTab === 'orders' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('orders')}>
+                    📋 Đơn hàng
+                    {unreadCount > 0 && <span className={styles.unreadBadge}>{unreadCount}</span>}
+                </button>
             </div>
 
             <div className={styles.dashboardContent}>

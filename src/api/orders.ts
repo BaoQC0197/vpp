@@ -1,5 +1,5 @@
-// src/api/orders.ts
 import { supabase } from '../lib/supabase';
+import emailjs from '@emailjs/browser';
 import type { Order, OrderStatus, CreateOrderPayload } from '../types/order';
 
 export async function createOrder(payload: CreateOrderPayload): Promise<number> {
@@ -13,6 +13,7 @@ export async function createOrder(payload: CreateOrderPayload): Promise<number> 
             note: payload.note || null,
             total_price: payload.total_price,
             status: 'pending',
+            is_read: false,
         })
         .select('id')
         .single();
@@ -54,10 +55,20 @@ export async function getOrders(): Promise<Order[]> {
     return data as Order[];
 }
 
+
 export async function updateOrderStatus(id: number, status: OrderStatus): Promise<void> {
     const { error } = await supabase
         .from('orders')
         .update({ status })
+        .eq('id', id);
+
+    if (error) throw error;
+}
+
+export async function markOrderAsRead(id: number): Promise<void> {
+    const { error } = await supabase
+        .from('orders')
+        .update({ is_read: true })
         .eq('id', id);
 
     if (error) throw error;
@@ -70,4 +81,32 @@ export async function deleteOrder(id: number): Promise<void> {
         .eq('id', id);
 
     if (error) throw error;
+}
+
+/**
+ * Sends Email notification using EmailJS.
+ */
+export async function sendEmailNotification(order: any) {
+    const SERVICE_ID = 'service_qowr3sv';
+    const TEMPLATE_ID = 'template_0w0ogfc';
+    const PUBLIC_KEY = 'vP4sl05peymvaFrwK';
+
+    const itemsList = order.items
+        .map((item: any) => `- ${item.name} x ${item.qty}`)
+        .join('\n');
+
+    const templateParams = {
+        id: order.id,
+        customer_name: order.customer_name,
+        customer_phone: order.customer_phone,
+        total_price: order.total_price.toLocaleString('vi-VN'),
+        items_list: itemsList,
+    };
+
+    try {
+        const response = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+        console.log('Email sent successfully!', response.status, response.text);
+    } catch (error) {
+        console.error('Failed to send email:', error);
+    }
 }

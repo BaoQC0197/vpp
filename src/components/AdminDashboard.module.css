@@ -493,3 +493,38 @@
         font-size: 12px;
     }
 }
+
+/* ===================== NOTIFICATIONS & HIGHLIGHTS ===================== */
+
+.unreadBadge {
+    background-color: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    margin-left: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.2rem;
+    height: 1.2rem;
+    vertical-align: middle;
+}
+
+.orderCard.unread {
+    border-left: 4px solid #ef4444;
+    background-color: #fffaf0;
+    /* Light highlight */
+}
+
+.newLabel {
+    background-color: #ef4444;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+}

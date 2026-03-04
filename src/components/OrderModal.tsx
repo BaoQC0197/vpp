@@ -1,7 +1,7 @@
 // src/components/OrderModal.tsx
 import { useState } from 'react';
 import type { CartItem } from '../hooks/useCart';
-import { createOrder } from '../api/orders';
+import { createOrder, sendEmailNotification } from '../api/orders';
 import styles from './OrderModal.module.css';
 
 interface OrderModalProps {
@@ -35,7 +35,7 @@ export default function OrderModal({ items, totalPrice, onClose, onConfirm }: Or
         setLoading(true);
         setApiError('');
         try {
-            await createOrder({
+            const orderId = await createOrder({
                 customer_name: name.trim(),
                 customer_phone: phone.trim(),
                 address: address.trim(),
@@ -48,6 +48,16 @@ export default function OrderModal({ items, totalPrice, onClose, onConfirm }: Or
                     quantity: i.quantity,
                 })),
             });
+
+            // Notify admin via Email (placeholder)
+            sendEmailNotification({
+                id: orderId,
+                customer_name: name.trim(),
+                customer_phone: phone.trim(),
+                total_price: totalPrice,
+                items: items.map(i => ({ name: i.product.name, qty: i.quantity }))
+            });
+
             onConfirm();
         } catch (err) {
             console.error('Order error:', err);
