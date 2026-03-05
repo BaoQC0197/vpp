@@ -25,8 +25,8 @@ export async function addCategory(input: Omit<CategoryInput, 'sort_order'>): Pro
     if (error) throw error;
 }
 
-/** Cập nhật label và/hoặc icon của một danh mục */
-export async function updateCategory(id: number, data: Partial<Pick<Category, 'label' | 'icon'>>): Promise<void> {
+/** Cập nhật label, icon và/hoặc sort_order của một danh mục */
+export async function updateCategory(id: number, data: Partial<Pick<Category, 'label' | 'icon' | 'sort_order'>>): Promise<void> {
     const { error } = await supabase
         .from('categories')
         .update(data)

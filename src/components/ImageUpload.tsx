@@ -1,6 +1,7 @@
 // src/components/ImageUpload.tsx
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import { uploadImage } from '../api/products';
+import { DEFAULT_PRODUCT_IMAGE } from '../constants/images';
 import styles from './ImageUpload.module.css';
 
 interface ImageUploadProps {
@@ -49,7 +50,12 @@ export default function ImageUpload({ currentImageUrl, onUploaded }: ImageUpload
             <div className={dropZoneClass} onClick={() => inputRef.current?.click()} onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave}>
                 {previewUrl ? (
                     <>
-                        <img src={previewUrl} alt="preview" className={styles.imagePreview} />
+                        <img
+                            src={previewUrl}
+                            alt="preview"
+                            className={styles.imagePreview}
+                            onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_PRODUCT_IMAGE; }}
+                        />
                         {uploading && <div className={styles.uploadOverlay}><span>Đang upload...</span></div>}
                     </>
                 ) : (

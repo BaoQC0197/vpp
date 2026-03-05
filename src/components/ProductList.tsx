@@ -5,10 +5,10 @@ import ProductCard from './ProductCard';
 import SkeletonCard from './SkeletonCard';
 import styles from './ProductList.module.css';
 
-const PAGE_SIZE = 8;
 const SKELETON_COUNT = 8;
 
 interface ProductListProps {
+    // ... items from 12-21 ...
     products: Product[];
     isAdmin: boolean;
     onEdit: (id: number) => void;
@@ -23,19 +23,28 @@ interface ProductListProps {
 
 export default function ProductList({ products, isAdmin, onEdit, onDelete, onAddToCart, onViewDetail, searchQuery, isLoading, onResetFilter, activeCategory }: ProductListProps) {
     const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(window.innerWidth > 768 ? 12 : 8);
 
-    // Reset to page 1 ONLY when filters change (category or search query)
+    useEffect(() => {
+        const handleResize = () => {
+            setPageSize(window.innerWidth > 768 ? 12 : 8);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Reset to page 1 ONLY when filters or pageSize change
     useEffect(() => {
         setPage(1);
-    }, [activeCategory, searchQuery]);
+    }, [activeCategory, searchQuery, pageSize]);
 
-    // Ensure the current page is still valid after products are added/deleted
+    // Ensure the current page is still valid after products change or pageSize changes
     useEffect(() => {
-        const totalPages = Math.ceil(products.length / PAGE_SIZE);
+        const totalPages = Math.ceil(products.length / pageSize);
         if (page > totalPages && totalPages > 0) {
             setPage(totalPages);
         }
-    }, [products.length, page]);
+    }, [products.length, page, pageSize]);
 
     // Skeleton loading state
     if (isLoading) {
@@ -75,8 +84,8 @@ export default function ProductList({ products, isAdmin, onEdit, onDelete, onAdd
         );
     }
 
-    const totalPages = Math.ceil(products.length / PAGE_SIZE);
-    const shown = products.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    const totalPages = Math.ceil(products.length / pageSize);
+    const shown = products.slice((page - 1) * pageSize, page * pageSize);
 
     const goTo = (p: number) => {
         setPage(p);
@@ -112,7 +121,7 @@ export default function ProductList({ products, isAdmin, onEdit, onDelete, onAdd
 
             <div className={styles.productListFooter}>
                 <p className={styles.productCountLabel}>
-                    Hiển thị <strong>{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, products.length)}</strong> / <strong>{products.length}</strong> sản phẩm
+                    Hiển thị <strong>{(page - 1) * pageSize + 1}–{Math.min(page * pageSize, products.length)}</strong> / <strong>{products.length}</strong> sản phẩm
                 </p>
 
                 {totalPages > 1 && (

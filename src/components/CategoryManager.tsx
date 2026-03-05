@@ -75,6 +75,32 @@ export default function CategoryManager({ categories, productCategoryCounts, onR
         finally { setAdding(false); }
     };
 
+    const handleMove = async (cat: Category, direction: 'up' | 'down') => {
+        const idx = categories.findIndex(c => c.id === cat.id);
+        if (direction === 'up' && idx === 0) return;
+        if (direction === 'down' && idx === categories.length - 1) return;
+
+        const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+        const target = categories[targetIdx];
+
+        // Simple swap logic: 
+        // We set our sort_order to target's sort_order, and target's to ours.
+        // If they are the same (e.g. both 50), we offset them slightly or re-index everything.
+        // For simplicity, we'll just use their indices as new sort_orders for now.
+        setSaving(true);
+        try {
+            await Promise.all([
+                updateCategory(cat.id, { sort_order: target.sort_order }),
+                updateCategory(target.id, { sort_order: cat.sort_order === target.sort_order ? cat.sort_order + (direction === 'up' ? -1 : 1) : cat.sort_order })
+            ]);
+            onRefresh();
+        } catch {
+            alert('Di chuyển thất bại!');
+        } finally {
+            setSaving(false);
+        }
+    };
+
     return (
         <div className={styles.catManager}>
             <div className={styles.catManagerHeader}>
@@ -145,6 +171,10 @@ export default function CategoryManager({ categories, productCategoryCounts, onR
                                 </div>
                                 <span className={styles.catColCount}>{productCategoryCounts[cat.key] ?? 0}</span>
                                 <div className={styles.catColActions}>
+                                    <div className={styles.reorderBtns}>
+                                        <button className={styles.btnMove} onClick={() => handleMove(cat, 'up')} disabled={categories.indexOf(cat) === 0 || saving} title="Di chuyển lên">↑</button>
+                                        <button className={styles.btnMove} onClick={() => handleMove(cat, 'down')} disabled={categories.indexOf(cat) === categories.length - 1 || saving} title="Di chuyển xuống">↓</button>
+                                    </div>
                                     <button className={styles.btnCatEdit} onClick={() => startEdit(cat)} title="Đổi tên">✏️</button>
                                     <button className={styles.btnCatDel} onClick={() => handleDelete(cat)} disabled={deletingId === cat.id} title="Xoá danh mục">
                                         {deletingId === cat.id ? '...' : '🗑'}
