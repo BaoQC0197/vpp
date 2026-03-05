@@ -18,6 +18,8 @@ import OrderModal from './components/OrderModal';
 import FloatButtons from './components/FloatButtons';
 import ConfirmModal from './components/ConfirmModal';
 import ProductDetailModal from './components/ProductDetailModal';
+import OrderHistoryDrawer from './components/OrderHistoryDrawer';
+import SaleSection from './components/SaleSection';
 import styles from './App.module.css';
 import logoImg from './assets/logo.png';
 
@@ -40,6 +42,7 @@ export default function App() {
     const [cartOpen, setCartOpen] = useState(false);
     const [orderOpen, setOrderOpen] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
+    const [orderHistoryOpen, setOrderHistoryOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const [confirm, setConfirm] = useState<ConfirmState>({
@@ -184,6 +187,7 @@ export default function App() {
                 onCartOpen={() => setCartOpen(true)}
             />
             <Hero searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+            <SaleSection products={products} onViewDetail={(p) => setDetailProduct(p)} />
             <CategoryBar
                 activeCategory={activeCategory}
                 onFilter={(cat) => { setActiveCategory(cat); setSearchQuery(''); }}
@@ -210,6 +214,7 @@ export default function App() {
                     categories={categories}
                     onRefreshCategories={handleRefreshCategories}
                     productCategoryCounts={productCategoryCounts}
+                    products={products}
                 />
             )}
 
@@ -270,10 +275,16 @@ export default function App() {
                     onClose={() => setDetailProduct(null)}
                     onAddToCart={handleAddToCart}
                     onBuyNow={handleBuyNow}
+                    onViewDetail={(p) => setDetailProduct(p)}
                 />
             )}
 
-            <FloatButtons />
+            <FloatButtons onOrderHistory={() => setOrderHistoryOpen(true)} />
+
+            <OrderHistoryDrawer
+                open={orderHistoryOpen}
+                onClose={() => setOrderHistoryOpen(false)}
+            />
 
             {/* Footer */}
             <footer className={styles.footer} id="contact">

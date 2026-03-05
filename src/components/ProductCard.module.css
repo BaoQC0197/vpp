@@ -73,6 +73,22 @@
     letter-spacing: 0.3px;
 }
 
+/* Sale badge */
+.saleBadge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.4px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
 .cardContent {
     padding: 16px;
     display: flex;
@@ -106,7 +122,7 @@
 
 .cardFooter {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     margin-top: auto;
     padding-top: 8px;
@@ -119,6 +135,32 @@
     color: var(--color-primary);
     min-width: 0;
     flex-shrink: 1;
+    word-break: break-word;
+}
+
+/* Sale price display */
+.priceBlock {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1px;
+    min-width: 0;
+    flex-shrink: 1;
+    min-height: 36px;
+    /* reserve 2-line height so button stays aligned */
+}
+
+.originalPrice {
+    font-size: 11px;
+    color: #94a3b8;
+    text-decoration: line-through;
+    font-weight: 400;
+}
+
+.salePrice {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ef4444;
     word-break: break-word;
 }
 

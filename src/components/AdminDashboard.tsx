@@ -1,6 +1,6 @@
 // src/components/AdminDashboard.tsx
 import { useState, useEffect, useCallback } from 'react';
-import type { ProductInput } from '../types/product';
+import type { Product, ProductInput } from '../types/product';
 import type { Order, OrderStatus } from '../types/order';
 import type { Category } from '../types/category';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../types/order';
@@ -8,6 +8,7 @@ import { getOrders, updateOrderStatus, deleteOrder, markOrderAsRead } from '../a
 import { addProductImages } from '../api/products';
 import MultiImageUpload from './MultiImageUpload';
 import CategoryManager from './CategoryManager';
+import PromotionManager from './PromotionManager';
 import styles from './AdminDashboard.module.css';
 
 interface AdminDashboardProps {
@@ -15,6 +16,7 @@ interface AdminDashboardProps {
     categories: Category[];
     onRefreshCategories: () => void;
     productCategoryCounts: Record<string, number>;
+    products: Product[];
 }
 
 const ALL_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'delivering', 'delivered', 'cancelled'];
@@ -142,6 +144,7 @@ function OrderHistory() {
     const [updatingId, setUpdatingId] = useState<number | null>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const [filterStatus, setFilterStatus] = useState<OrderStatus | 'all'>('all');
+    const [phoneFilter, setPhoneFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
     const loadOrders = useCallback(async () => {
@@ -193,17 +196,46 @@ function OrderHistory() {
         finally { setDeletingId(null); }
     };
 
-    const filteredOrders = filterStatus === 'all' ? orders : orders.filter(o => o.status === filterStatus);
+    const filteredOrders = orders
+        .filter(o => filterStatus === 'all' || o.status === filterStatus)
+        .filter(o => {
+            const q = phoneFilter.replace(/\s/g, '');
+            return !q || o.customer_phone.replace(/\s/g, '').includes(q);
+        });
     const totalPages = Math.max(1, Math.ceil(filteredOrders.length / PAGE_SIZE));
     const pagedOrders = filteredOrders.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-    const handleFilterChange = (status: OrderStatus | 'all') => { setFilterStatus(status); setCurrentPage(1); setExpandedId(null); };
+    const handleFilterChange = (status: OrderStatus | 'all') => {
+        setFilterStatus(status);
+        setCurrentPage(1);
+        setExpandedId(null);
+    };
+    const handlePhoneFilter = (value: string) => {
+        setPhoneFilter(value);
+        setCurrentPage(1);
+        setExpandedId(null);
+    };
     const formatDate = (iso: string) => new Date(iso).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' });
 
     if (loading) return <div className={styles.orderLoading}>⏳ Đang tải đơn hàng...</div>;
 
     return (
         <div className={styles.orderHistory}>
+            {/* Phone search */}
+            <div className={styles.phoneSearchRow}>
+                <span className={styles.phoneSearchIcon}>🔍</span>
+                <input
+                    type="tel"
+                    className={styles.phoneSearchInput}
+                    placeholder="Tìm theo số điện thoại..."
+                    value={phoneFilter}
+                    onChange={e => handlePhoneFilter(e.target.value)}
+                />
+                {phoneFilter && (
+                    <button className={styles.phoneSearchClear} onClick={() => handlePhoneFilter('')}>✕</button>
+                )}
+            </div>
+
             <div className={styles.orderFilterBar}>
                 <button className={`${styles.orderFilterBtn}${filterStatus === 'all' ? ' ' + styles.active : ''}`} onClick={() => handleFilterChange('all')}>
                     Tất cả ({orders.length})
@@ -308,12 +340,12 @@ function OrderHistory() {
                     </div>
 
                     {totalPages > 1 && (
-                        <div className={styles.orderPagination}>
-                            <button className={styles.pageBtn ?? ''} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>← Trước</button>
+                        <div className={styles.pagination}>
+                            <button className={styles.pageBtn} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>← Trước</button>
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map(pg => (
-                                <button key={pg} className={`${styles.pageBtn}${currentPage === pg ? ' ' + styles.active : ''}`} onClick={() => setCurrentPage(pg)}>{pg}</button>
+                                <button key={pg} className={`${styles.pageBtn}${currentPage === pg ? ' ' + styles.pageBtnActive : ''}`} onClick={() => setCurrentPage(pg)}>{pg}</button>
                             ))}
-                            <button className={styles.pageBtn ?? ''} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>Sau →</button>
+                            <button className={styles.pageBtn} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>Sau →</button>
                         </div>
                     )}
                 </>
@@ -325,9 +357,9 @@ function OrderHistory() {
 }
 
 // ===================== ADMIN DASHBOARD (Main) =====================
-type Tab = 'products' | 'orders' | 'categories';
+type Tab = 'products' | 'orders' | 'categories' | 'promotions';
 
-export default function AdminDashboard({ onAdd, categories, onRefreshCategories, productCategoryCounts }: AdminDashboardProps) {
+export default function AdminDashboard({ onAdd, categories, onRefreshCategories, productCategoryCounts, products }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState<Tab>('products');
     const [unreadCount, setUnreadCount] = useState(0);
 
@@ -353,6 +385,7 @@ export default function AdminDashboard({ onAdd, categories, onRefreshCategories,
             <div className={styles.dashboardTabs}>
                 <button className={`${styles.dashboardTab}${activeTab === 'products' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('products')}>📦 Quản lý sản phẩm</button>
                 <button className={`${styles.dashboardTab}${activeTab === 'categories' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('categories')}>🏷️ Danh mục</button>
+                <button className={`${styles.dashboardTab}${activeTab === 'promotions' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('promotions')}>🔥 Khuyến mãi</button>
                 <button className={`${styles.dashboardTab}${activeTab === 'orders' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('orders')}>
                     📋 Đơn hàng
                     {unreadCount > 0 && <span className={styles.unreadBadge}>{unreadCount}</span>}
@@ -364,6 +397,7 @@ export default function AdminDashboard({ onAdd, categories, onRefreshCategories,
                 {activeTab === 'categories' && (
                     <CategoryManager categories={categories} productCategoryCounts={productCategoryCounts} onRefresh={onRefreshCategories} />
                 )}
+                {activeTab === 'promotions' && <PromotionManager products={products} />}
                 {activeTab === 'orders' && <OrderHistory />}
             </div>
         </div>

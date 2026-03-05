@@ -2,13 +2,29 @@
 
 /* Footer */
 .footer {
-    background: #0f172a;
-    color: #cbd5e1;
+    position: relative;
+    background: #064e3b;
+    background-image: url('/hero-bg-4k.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
     margin-top: 60px;
-    border-top: 3px solid var(--color-primary);
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(6, 78, 59, 0.95) 0%, rgba(6, 78, 59, 0.85) 100%);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .footerInner {
+    position: relative;
+    z-index: 2;
     display: grid;
     grid-template-columns: 2fr 1fr 1.5fr;
     gap: 48px;
@@ -38,7 +54,7 @@
 .footerTagline {
     font-size: 14px;
     line-height: 1.8;
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.8);
     margin: 0;
 }
 
@@ -59,17 +75,17 @@
 .footerContact h4 {
     font-size: 11px;
     font-weight: 700;
-    color: #64748b;
+    color: white;
     text-transform: uppercase;
     letter-spacing: 1.2px;
     margin: 0 0 16px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #1e293b;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footerLinks a {
     font-size: 14px;
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.8);
     transition: color var(--transition), padding-left var(--transition);
     padding: 5px 0;
     display: block;
@@ -82,7 +98,7 @@
 
 .footerContact p {
     font-size: 14px;
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.8);
     margin: 0;
     padding: 5px 0;
     display: flex;
@@ -92,7 +108,7 @@
 }
 
 .footerContact a {
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.8);
     transition: color var(--transition);
 }
 
@@ -101,11 +117,13 @@
 }
 
 .footerBottom {
-    border-top: 1px solid #1e293b;
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 18px 24px;
     text-align: center;
     font-size: 13px;
-    color: #475569;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Order success toast */

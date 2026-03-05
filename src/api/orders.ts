@@ -55,6 +55,18 @@ export async function getOrders(): Promise<Order[]> {
     return data as Order[];
 }
 
+export async function getOrdersByPhone(phone: string): Promise<Order[]> {
+    const cleaned = phone.replace(/\s/g, '');
+    const { data, error } = await supabase
+        .from('orders')
+        .select('*, order_items(*)')
+        .eq('customer_phone', cleaned)
+        .order('created_at', { ascending: false });
+
+    if (error) { console.error('getOrdersByPhone error:', error); return []; }
+    return data as Order[];
+}
+
 
 export async function updateOrderStatus(id: number, status: OrderStatus): Promise<void> {
     const { error } = await supabase

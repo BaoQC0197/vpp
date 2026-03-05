@@ -11,6 +11,7 @@ interface ProductDetailModalProps {
     onClose: () => void;
     onAddToCart: (product: Product, qty: number) => void;
     onBuyNow: (product: Product, qty: number) => void;
+    onViewDetail: (product: Product) => void;
 }
 
 export default function ProductDetailModal({
@@ -20,6 +21,7 @@ export default function ProductDetailModal({
     onClose,
     onAddToCart,
     onBuyNow,
+    onViewDetail,
 }: ProductDetailModalProps) {
     // Build gallery: combine product.image (always exists) with product.images (from DB)
     const gallery = (() => {
@@ -57,7 +59,10 @@ export default function ProductDetailModal({
     const handleAddToCart = () => {
         onAddToCart(product, qty);
         setAdded(true);
-        setTimeout(() => setAdded(false), 1800);
+        setTimeout(() => {
+            setAdded(false);
+            onClose();
+        }, 800);
     };
 
     const handleBuyNow = () => {
@@ -67,6 +72,8 @@ export default function ProductDetailModal({
 
     const formatPrice = (p: number) =>
         p.toLocaleString('vi-VN') + ' đ';
+
+    const promo = product.promotion;
 
     return (
         <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -126,7 +133,15 @@ export default function ProductDetailModal({
                         )}
 
                         <h2 className={styles.productName}>{product.name}</h2>
-                        <p className={styles.price}>{formatPrice(product.price)}</p>
+                        {promo ? (
+                            <div className={styles.priceBlock}>
+                                <span className={styles.originalPrice}>{formatPrice(product.price)}</span>
+                                <span className={styles.salePrice}>{formatPrice(promo.sale_price)}</span>
+                                <span className={styles.promoLabel}>{promo.label}</span>
+                            </div>
+                        ) : (
+                            <p className={styles.price}>{formatPrice(product.price)}</p>
+                        )}
 
                         {product.description && (
                             <div className={styles.descSection}>
@@ -177,9 +192,9 @@ export default function ProductDetailModal({
                                     key={p.id}
                                     className={styles.relatedCard}
                                     onClick={() => {
-                                        // re-open modal with this product
+                                        // Navigate to the related product's detail modal
                                         onClose();
-                                        setTimeout(() => onAddToCart(p, 0), 0); // handled by parent via onViewDetail
+                                        setTimeout(() => onViewDetail(p), 50);
                                     }}
                                     title={p.name}
                                 >

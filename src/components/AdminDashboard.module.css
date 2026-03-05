@@ -130,6 +130,63 @@
     margin-bottom: 12px;
 }
 
+/* Phone search */
+.phoneSearchRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8fafc;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-full);
+    padding: 6px 12px 6px 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.phoneSearchRow:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.phoneSearchIcon {
+    font-size: 15px;
+    flex-shrink: 0;
+    color: #94a3b8;
+}
+
+.phoneSearchInput {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--color-text);
+    outline: none;
+    min-width: 0;
+}
+
+.phoneSearchInput::placeholder {
+    color: #94a3b8;
+}
+
+.phoneSearchClear {
+    background: #e2e8f0;
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 10px;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+.phoneSearchClear:hover {
+    background: #cbd5e1;
+}
+
 /* Filter bar */
 .orderFilterBar {
     display: flex;
@@ -527,4 +584,52 @@
     border-radius: 4px;
     margin-left: 0.5rem;
     text-transform: uppercase;
+}
+
+/* ── Pagination (shared by Orders tab) ── */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 16px 0 4px;
+    flex-wrap: wrap;
+}
+
+.pageSummary {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+    margin-right: 4px;
+}
+
+.pageBtn {
+    padding: 6px 12px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 7px;
+    background: white;
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 36px;
+}
+
+.pageBtn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: #f0fdf4;
+}
+
+.pageBtn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.pageBtnActive {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    font-weight: 700;
 }

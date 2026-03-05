@@ -29,12 +29,15 @@ function Highlight({ text, query }: { text: string; query?: string }) {
 
 export default function ProductCard({ product, isAdmin, onEdit, onDelete, onAddToCart, onViewDetail, searchQuery }: ProductCardProps) {
     const [added, setAdded] = useState(false);
+    const promo = product.promotion;
 
     const handleAddToCart = () => {
         onAddToCart(product);
         setAdded(true);
         setTimeout(() => setAdded(false), 1500);
     };
+
+    const fmt = (n: number) => n.toLocaleString('vi-VN') + ' đ';
 
     return (
         <div className={styles.card}>
@@ -47,6 +50,9 @@ export default function ProductCard({ product, isAdmin, onEdit, onDelete, onAddT
                 <div className={styles.imgOverlay}>
                     <span className={styles.imgZoomIcon}>🔍</span>
                 </div>
+                {promo && (
+                    <span className={styles.saleBadge}>{promo.label}</span>
+                )}
             </div>
             <div className={styles.cardContent}>
                 <h3
@@ -60,7 +66,16 @@ export default function ProductCard({ product, isAdmin, onEdit, onDelete, onAddT
                     <p className={styles.cardDesc}>{product.description}</p>
                 )}
                 <div className={styles.cardFooter}>
-                    <div className={styles.cardPrice}>{product.price.toLocaleString('vi-VN')} đ</div>
+                    <div className={styles.priceBlock}>
+                        {promo ? (
+                            <>
+                                <span className={styles.originalPrice}>{fmt(product.price)}</span>
+                                <span className={styles.salePrice}>{fmt(promo.sale_price)}</span>
+                            </>
+                        ) : (
+                            <span className={styles.cardPrice}>{fmt(product.price)}</span>
+                        )}
+                    </div>
                     {!isAdmin && (
                         <button
                             className={`${styles.btnAddCart}${added ? ' ' + styles.added : ''}`}

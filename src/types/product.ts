@@ -1,4 +1,5 @@
 // src/types/product.ts
+import type { Promotion } from './promotion';
 
 export interface Product {
     id: number;
@@ -8,6 +9,7 @@ export interface Product {
     description: string;
     category?: string;
     images?: string[]; // gallery images from product_images table
+    promotion?: Promotion | null;
 }
 
-export type ProductInput = Omit<Product, 'id' | 'images'>;
+export type ProductInput = Omit<Product, 'id' | 'images' | 'promotion'>;

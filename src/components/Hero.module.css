@@ -2,7 +2,12 @@
 
 .hero {
     position: relative;
-    background: linear-gradient(135deg, #064e3b 0%, #059669 40%, #10b981 70%, #34d399 100%);
+    background: #064e3b;
+    /* Fallback color */
+    background-image: url('/hero-bg-4k.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     overflow: hidden;
     padding: 44px 0 40px;
 }
@@ -10,14 +15,14 @@
 .heroBg {
     position: absolute;
     inset: 0;
-    background-image:
-        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, .04) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(245, 158, 11, .08) 0%, transparent 40%),
-        radial-gradient(circle at 60% 80%, rgba(255, 255, 255, .03) 0%, transparent 40%);
+    background: linear-gradient(90deg, rgba(6, 78, 59, 0.85) 0%, rgba(5, 150, 105, 0.4) 100%);
     pointer-events: none;
+    z-index: 1;
 }
 
 .heroInner {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -31,31 +36,53 @@
 }
 
 .heroBadge {
-    display: inline-block;
-    background: linear-gradient(90deg, #f59e0b, #fbbf24);
-    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
+    border: 2.5px solid rgba(255, 255, 255, 0.4);
     color: #1e293b;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 8px 22px;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 10px 24px;
     border-radius: var(--radius-full);
     margin-bottom: 24px;
     letter-spacing: 0.5px;
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 25px rgba(255, 152, 0, 0.4);
     animation: glowPulse 2s infinite;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     outline: none;
+    position: relative;
 }
 
 .heroBadge:hover {
-    transform: scale(1.1) translateY(-2px);
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
-    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255, 152, 0, 0.6);
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
 }
 
 .heroBadge:active {
     transform: scale(0.95);
+}
+
+.handPointer {
+    font-size: 20px;
+    display: inline-block;
+    animation: handTap 1.2s infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes handTap {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(5px) scale(0.9);
+    }
 }
 
 @keyframes glowPulse {
@@ -87,18 +114,49 @@
 }
 
 .heroTitle {
-    font-size: clamp(32px, 5vw, 52px);
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 20px;
-    letter-spacing: -0.5px;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 400;
+    /* Pattaya uses 400 */
+    font-family: 'Pattaya', sans-serif;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: floatTitle 6s ease-in-out infinite;
+}
+
+@keyframes floatTitle {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .heroTitleAccent {
-    background: linear-gradient(90deg, #fcd34d, #f59e0b);
+    font-family: 'Itim', cursive;
+    background: linear-gradient(90deg, #fff176, #ffd54f, #ffb300);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    font-weight: 700;
+    display: inline-block;
+    filter: drop-shadow(0 0 12px rgba(255, 213, 79, 0.5));
+    animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+    from {
+        filter: drop-shadow(0 0 8px rgba(255, 213, 79, 0.4));
+    }
+
+    to {
+        filter: drop-shadow(0 0 20px rgba(255, 213, 79, 0.8));
+    }
 }
 
 .heroSubtitle {
@@ -112,12 +170,19 @@
 /* Image carousel */
 .heroImageWrap {
     position: relative;
-    flex: 1.4 1 0;
+    flex: 0.6 1 0;
     min-width: 0;
-    max-width: 800px;
+    max-width: 500px;
     display: flex;
     align-items: stretch;
     justify-content: center;
+}
+
+/* On very large screens (27"+) give the banner more room */
+@media (min-width: 1800px) {
+    .heroImageWrap {
+        max-width: 600px;
+    }
 }
 
 .heroImageGlow {
@@ -145,6 +210,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center center;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: high-quality;
     opacity: 0;
     transition: opacity 0.8s ease-in-out;
     pointer-events: none;

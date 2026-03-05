@@ -2,7 +2,11 @@
 import { useState, useEffect } from 'react';
 import styles from './FloatButtons.module.css';
 
-export default function FloatButtons() {
+interface FloatButtonsProps {
+    onOrderHistory: () => void;
+}
+
+export default function FloatButtons({ onOrderHistory }: FloatButtonsProps) {
     const [showTop, setShowTop] = useState(false);
 
     useEffect(() => {
@@ -28,6 +32,17 @@ export default function FloatButtons() {
                 <i className="fa-solid fa-phone"></i>
                 <span className={styles.floatLabel}>Gọi ngay</span>
             </a>
+
+            {/* Order history button */}
+            <button
+                className={`${styles.floatBtn} ${styles.orderHistoryBtn}`}
+                onClick={onOrderHistory}
+                title="Đơn hàng của tôi"
+                aria-label="Xem đơn hàng"
+            >
+                📋
+                <span className={styles.floatLabel}>Đơn của tôi</span>
+            </button>
 
             {/* Scroll to top */}
             <button

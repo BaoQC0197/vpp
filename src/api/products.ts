@@ -3,9 +3,10 @@ import { supabase } from '../lib/supabase';
 import type { Product, ProductInput } from '../types/product';
 
 export async function getProducts(): Promise<Product[]> {
+    const now = new Date().toISOString();
     const { data, error } = await supabase
         .from('products')
-        .select('*, product_images(id, url, position)')
+        .select('*, product_images(id, url, position), promotions(*)')
         .order('id', { ascending: false });
 
     if (error) {
@@ -13,12 +14,18 @@ export async function getProducts(): Promise<Product[]> {
         return [];
     }
 
-    return (data as any[]).map(p => ({
-        ...p,
-        images: (p.product_images ?? [])
-            .sort((a: any, b: any) => a.position - b.position)
-            .map((img: any) => img.url),
-    })) as Product[];
+    return (data as any[]).map(p => {
+        const activePromo = (p.promotions ?? []).find((promo: any) =>
+            promo.active && (!promo.ends_at || promo.ends_at >= now)
+        ) ?? null;
+        return {
+            ...p,
+            images: (p.product_images ?? [])
+                .sort((a: any, b: any) => a.position - b.position)
+                .map((img: any) => img.url),
+            promotion: activePromo,
+        };
+    }) as Product[];
 }
 
 export async function addProduct(product: ProductInput): Promise<number> {

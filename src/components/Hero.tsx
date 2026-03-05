@@ -37,14 +37,15 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
                         className={styles.heroBadge}
                         onClick={scrollToResults}
                     >
-                        ✨ Khám phá ngay
+                        ✨ Mua ở đây thì ngon luôn!
+                        <span className={styles.handPointer}>👆</span>
                     </button>
                     <h1 className={styles.heroTitle}>
-                        Văn Phòng Phẩm<br />
-                        <span className={styles.heroTitleAccent}>Chất Lượng Cao</span>
+                        Học hành thiếu đồ<br />
+                        <span className={styles.heroTitleAccent}>Ti Anh cứu bồ</span>
                     </h1>
                     <p className={styles.heroSubtitle}>
-                        Chuyên nhận đặt SGK giá tốt - Photo - In - Gói quà lưu niệm
+                        Nhận đặt SGK theo bộ giá tốt - Photo - In ấn - Gói quà lưu niệm
                     </p>
 
                     {/* Search — desktop */}
