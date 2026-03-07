@@ -1,4 +1,6 @@
-/* CategoryManager.module.css */
+/* CategoryManager.module.css 
+   Bím giải thích: Nơi đây là trang Quản lý Danh mục dành riêng cho Admin.
+*/
 
 .catManager {
     display: flex;
@@ -37,7 +39,9 @@
     transform: translateY(-1px);
 }
 
-/* Add form */
+/* 
+   Khung "Thêm danh mục mới" (Add form)
+*/
 .catAddForm {
     background: #f8fafc;
     border: 1px solid var(--color-border);
@@ -151,17 +155,21 @@
     background: var(--color-primary-light);
 }
 
-/* Category table */
+/* 
+   Category table (Bảng danh sách các danh mục)
+*/
 .catTable {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     overflow: hidden;
 }
 
+/* Dòng tiêu đề của bảng (Tên danh mục | Số lượng | Hành động) */
 .catTableHead {
     display: grid;
+    /* Dùng Grid để chia cột bảng cho thẳng hàng tăm tắp */
     grid-template-columns: 1fr 80px 120px;
-    /* Thu nhỏ cột số lượng và hành động */
+    /* Cột 1 co giãn tự do, Cột 2 rộng 80px, Cột 3 rộng 120px */
     padding: 10px 16px;
     background: #f1f5f9;
     font-size: 12px;
@@ -211,16 +219,6 @@
 .catRowKey {
     font-size: 12px;
     color: var(--color-text-muted);
-}
-
-.catBadgeFixed {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: var(--radius-full);
-    background: #dbeafe;
-    color: #1d4ed8;
-    border: 1px solid #bfdbfe;
 }
 
 .catColCount {
@@ -379,7 +377,7 @@
 @media (max-width: 768px) {
     .catTableHead {
         display: none;
-        /* Ẩn header bảng trên mobile để tiết kiệm diện tích */
+        /* Ẩn dòng tiêu đề "Tên | Số lượng" trên mobile để tiết kiệm diện tích */
     }
 
     .catRow {

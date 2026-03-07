@@ -1,4 +1,6 @@
-/* CategoryBar.module.css */
+/* CategoryBar.module.css 
+   Bím giải thích: Đây là thanh ngang chứa các danh mục (Bút, Vở, Phụ kiện...).
+*/
 
 .categoryBar {
     max-width: 1800px;
@@ -6,22 +8,33 @@
     margin: 0 auto;
     padding: 0 clamp(20px, 2.5%, 60px);
     scroll-margin-top: 80px;
+    /* Khi cuộn đến phần này, luôn chừa ra 80px khoảng cách với mép trên để không bị Header che mất */
 }
 
+/* 
+   Danh sách các danh mục nằm ngang 
+   - Dùng "overflow-x: auto" để nếu danh mục dài quá màn hình thì có thể lướt ngang được.
+*/
 .categoryList {
     display: flex;
+    /* Dàn hàng ngang */
     flex-wrap: nowrap;
+    /* Cấm rớt dòng (bắt buộc nằm trên 1 hàng) */
     gap: 12px;
     padding: 16px 0;
     justify-content: flex-start;
     align-items: center;
     border-bottom: 1px solid var(--color-border);
     overflow-x: auto;
+    /* Cho phép cuộn ngang (vuốt qua lại) */
     scrollbar-width: thin;
+    /* Thu gọn thanh cuộn trên Firefox */
     scrollbar-color: var(--color-border) transparent;
     -webkit-overflow-scrolling: touch;
+    /* Giúp vuốt ngang trên iPhone/iPad mượt hơn */
 }
 
+/* Tùy chỉnh thanh cuộn ngang trên Chrome/Safari cho nó đẹp (nhỏ nhắn, bo tròn) */
 .categoryList::-webkit-scrollbar {
     height: 4px;
 }
@@ -35,12 +48,14 @@
     border-radius: 10px;
 }
 
+/* Viên thuốc chứa tên danh mục */
 .categoryPill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 8px 18px;
     border-radius: var(--radius-full);
+    /* Bo tròn vo 2 đầu */
     border: 1.5px solid var(--color-border);
     background: transparent;
     color: var(--color-text-muted);
@@ -48,7 +63,9 @@
     font-size: 14px;
     transition: all var(--transition);
     white-space: nowrap;
+    /* Cấm rớt dòng nội dung chữ */
     flex: 0 0 auto;
+    /* Cấm bị ép nhỏ lại (bóp chiều ngang) khi màn hình thiếu chỗ */
 }
 
 .categoryPill:hover {

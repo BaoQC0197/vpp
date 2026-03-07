@@ -1,17 +1,25 @@
-/* OrderModal.module.css */
+/* OrderModal.module.css 
+   Bím giải thích: Đây là giao diện của bảng điền thông tin Đặt hàng.
+*/
 
+/* 
+   Hiệu ứng trượt từ dưới lên (Dành cho cái bảng)
+*/
 @keyframes slideUp {
     from {
         transform: translateY(30px);
+        /* Bắt đầu ở vị trí lùi xuống 30px */
         opacity: 0;
     }
 
     to {
         transform: translateY(0);
+        /* Trượt về đúng vị trí chuẩn (đứng im) */
         opacity: 1;
     }
 }
 
+/* Hiệu ứng mờ dần (Dành cho nền đen) */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -22,29 +30,39 @@
     }
 }
 
+/* Nền đen phủ kín màn hình */
 .orderOverlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, .55);
     backdrop-filter: blur(4px);
+    /* Làm mờ cảnh vật phía sau đi một chút */
     z-index: 1000;
+
+    /* Flexbox 2 dòng thần thánh giúp căn giữa hoàn toàn nội dung bên trong */
     display: flex;
     align-items: center;
+    /* Căn giữa theo chiều dọc */
     justify-content: center;
+    /* Căn giữa theo chiều ngang */
+
     padding: 20px;
     animation: fadeIn 0.2s ease;
 }
 
+/* Bảng thông tin đặt hàng (màu trắng) nằm chỉnh giữa màn hình */
 .orderModal {
     background: var(--color-surface);
     border-radius: var(--radius-lg);
     width: 100%;
     max-width: 500px;
     max-height: 90vh;
+    /* Không cho phép bảng cao vượt quá 90% màn hình thiết bị */
     display: flex;
     flex-direction: column;
     box-shadow: var(--shadow-lg);
     animation: slideUp 0.3s ease;
+    /* Gọi hiệu ứng trượt từ dưới lên */
 }
 
 .orderModalHeader {

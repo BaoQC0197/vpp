@@ -1,9 +1,15 @@
-/* ProductList.module.css */
+/* ProductList.module.css 
+   Bím giải thích: CSS Grid là thuật toán chẻ lướt cực mạnh.
+   Thay vì phải float hay flex từng cái, Grid giúp bạn kẻ sẵn 
+   bàn cờ và đặt các cờ (hiện tại là thẻ sản phẩm) vào ô mong muốn.
+*/
 
 .productGrid {
     display: grid;
+    /* Lệnh này chia màn hình thành 6 cột đều nhau (1fr = 1 phân số) */
     grid-template-columns: repeat(6, 1fr);
     gap: 20px;
+    /* Cách đều các mặt phẳng sản phẩm là 20px */
     padding: 28px 0 40px;
 }
 
@@ -118,10 +124,14 @@
     line-height: 38px;
 }
 
-/* Responsive */
+/* 
+   Responsive: Điều chỉnh lưới tùy theo kích thước màn hình
+   - Màn hình nhỏ đi thì bớt số cột lại để thẻ sản phẩm không bị bóp nghẹt 
+*/
 @media (max-width: 1280px) {
     .productGrid {
         grid-template-columns: repeat(4, 1fr);
+        /* Giảm từ 6 -> 4 cột */
         gap: 18px;
     }
 }
@@ -129,6 +139,7 @@
 @media (max-width: 1024px) {
     .productGrid {
         grid-template-columns: repeat(3, 1fr);
+        /* Giảm từ 4 -> 3 cột */
         gap: 18px;
     }
 }
@@ -136,6 +147,7 @@
 @media (max-width: 768px) {
     .productGrid {
         grid-template-columns: repeat(2, 1fr);
+        /* Trên iPad/Mobile nằm dọc: 2 cột */
         gap: 14px;
         padding: 24px 0 48px;
     }
@@ -143,6 +155,7 @@
 
 @media (max-width: 480px) {
     .productGrid {
+        /* Vẫn giữ 2 cột nhưng thu hẹp khoảng cách (gap) lại */
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }

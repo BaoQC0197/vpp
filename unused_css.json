@@ -1,0 +1,136 @@
+{
+  "D:\\Nghich\\VPP\\vpp\\src\\App.module.css": [
+    "5fr",
+    "2px",
+    "orderToast",
+    "35s",
+    "4s",
+    "6s",
+    "orderToastIcon"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\AdminDashboard.module.css": [
+    "4s",
+    "5s",
+    "2s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\CartDrawer.module.css": [
+    "3s",
+    "35s",
+    "5px",
+    "2s",
+    "5s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\CategoryBar.module.css": [
+    "5px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\CategoryManager.module.css": [
+    "15s",
+    "5px",
+    "catBadgeFixed"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\ConfirmModal.module.css": [
+    "2s",
+    "3s",
+    "5px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\EditModal.module.css": [
+    "2s",
+    "3s",
+    "5px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\FloatButtons.module.css": [
+    "2s",
+    "3s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\Header.module.css": [
+    "3s",
+    "5px",
+    "cartBtn",
+    "cartBadge",
+    "adminGreeting",
+    "4s",
+    "22s",
+    "2s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\Hero.module.css": [
+    "5px",
+    "3s",
+    "2s",
+    "8s",
+    "heroScrollBtn",
+    "heroScrollBtnMobile"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\ImageLightbox.module.css": [
+    "25s",
+    "3s",
+    "2s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\ImageUpload.module.css": [
+    "5px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\MultiImageUpload.module.css": [
+    "2s",
+    "3px",
+    "5px",
+    "15s",
+    "7s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\OrderHistoryDrawer.module.css": [
+    "3s",
+    "35s",
+    "2s",
+    "5px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\OrderModal.module.css": [
+    "2s",
+    "3s",
+    "5px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\ProductCard.module.css": [
+    "25s",
+    "45s",
+    "cardBadge",
+    "3px",
+    "4px",
+    "2s",
+    "1px",
+    "5px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\ProductDetailModal.module.css": [
+    "2s",
+    "3s",
+    "5px",
+    "15s",
+    "25s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\ProductList.module.css": [
+    "2s",
+    "5px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\PromotionManager.module.css": [
+    "5px",
+    "2s",
+    "15s",
+    "3px"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\SaleSection.module.css": [
+    "inner",
+    "5px",
+    "2s",
+    "3px",
+    "3s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\SkeletonCard.module.css": [
+    "4s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\components\\Toast.module.css": [
+    "3s",
+    "7s"
+  ],
+  "D:\\Nghich\\VPP\\vpp\\src\\styles\\global.css": [
+    "googleapis",
+    "2s",
+    "15s",
+    "3s"
+  ]
+}

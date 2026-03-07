@@ -1,4 +1,6 @@
-/* OrderHistoryDrawer.module.css */
+/* OrderHistoryDrawer.module.css 
+   Bím giải thích: File này thiết kế bảng điều khiển lịch sử đơn hàng trượt từ phải sang. 
+*/
 
 .backdrop {
     position: fixed;
@@ -46,6 +48,7 @@
     background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
     color: white;
     flex-shrink: 0;
+    /* Cấm không cho phần Header bị bóp nghẹt khi danh sách đơn hàng quá dài */
 }
 
 .headerLeft {
@@ -89,6 +92,7 @@
     border-bottom: 1px solid #f1f5f9;
     background: #f8fafc;
     flex-shrink: 0;
+    /* Giữ nguyên chiều cao của ô tìm kiếm */
 }
 
 .searchHint {

@@ -1,4 +1,6 @@
-/* PromotionManager.module.css */
+/* PromotionManager.module.css 
+   Bím giải thích: File này thiết kế giao diện cho Quản lý Khuyến mãi (Admin).
+*/
 
 .wrap {
     display: flex;
@@ -6,7 +8,9 @@
     gap: 24px;
 }
 
-/* Form card */
+/* 
+   Khung bao bọc form điền thông tin (Form card)
+*/
 .formCard {
     background: #f8fafc;
     border: 1.5px solid #e2e8f0;
@@ -31,9 +35,11 @@
     margin: 0 0 16px;
 }
 
+/* Khung chứa các ô nhập (chia làm 2 cột bằng Grid) */
 .formGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    /* Tự động chia 2 cột đều nhau */
     gap: 14px;
 }
 
@@ -171,7 +177,9 @@
     cursor: not-allowed;
 }
 
-/* List */
+/* 
+   Danh sách Khuyến mãi đã tạo (List)
+*/
 .listSection {
     display: flex;
     flex-direction: column;
@@ -407,14 +415,18 @@
     font-weight: 500;
 }
 
-/* Pagination */
+/* 
+   Phân trang (Pagination)
+*/
 .pagination {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Đẩy các nút sang giữa */
     gap: 4px;
     padding-top: 14px;
     flex-wrap: wrap;
+    /* Nếu nhiều nút quá thì tự xuống dòng */
 }
 
 .pageBtn {

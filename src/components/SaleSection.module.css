@@ -1,15 +1,12 @@
-/* SaleSection.module.css */
+/* SaleSection.module.css 
+   Bím giải thích: File này thiết kế cho khung "Flash Sale" nằm ở trang chủ.
+*/
 
 .section {
     padding: 28px 0 16px;
     background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+    /* Màu cam nhạt mờ dần thành trắng */
     border-bottom: 1px solid #fed7aa;
-}
-
-.inner {
-    max-width: 1800px;
-    margin: 0 auto;
-    padding: 0 clamp(20px, 2.5%, 60px);
 }
 
 .titleRow {
@@ -59,18 +56,30 @@
     white-space: nowrap;
 }
 
-/* Horizontal scroll strip */
+/* 
+   Horizontal scroll strip (Dải băng cuộn ngang)
+   Dùng để vuốt các sản phẩm sale sang trái phải.
+*/
 .strip {
     display: flex;
+    /* Xếp thành hàng ngang */
     gap: 14px;
     overflow-x: auto;
+    /* Cho phép cuộn ngang nếu nội dung tràn màn hình */
     padding-bottom: 12px;
+
+    /* 
+       scroll-snap-type: Giúp khi vuốt trên điện thoại, ảnh thẻ không bị lửng lơ nửa chừng
+       mà sẽ tự động hít (chuồi) vào đúng vị trí ngay ngắn.
+    */
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+    /* Giúp vuốt mượt trên Safari/iOS */
     scrollbar-width: thin;
     scrollbar-color: #fed7aa transparent;
 }
 
+/* Trang trí lại thanh cuộn kéo ngang cho nhỏ gọn, đẹp mắt */
 .strip::-webkit-scrollbar {
     height: 4px;
 }
@@ -84,10 +93,14 @@
     border-radius: 2px;
 }
 
-/* Sale card */
+/* 
+   Sale card (Thẻ sản phẩm Flash Sale)
+*/
 .saleCard {
     flex: 0 0 200px;
+    /* Bắt buộc mỗi thẻ phải rông đúng 200px, không được co bóp */
     scroll-snap-align: start;
+    /* Điểm hít khi vuốt: Hít vào đầu thẻ */
     border: 1.5px solid #fed7aa;
     border-radius: 14px;
     background: white;
@@ -95,6 +108,7 @@
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
+    /* Điểm mốc để gắn Tem "HOT" (saleBadge) lên góc */
 }
 
 .saleCard:hover {

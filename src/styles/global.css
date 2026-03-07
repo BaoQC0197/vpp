@@ -9,7 +9,12 @@
 /* Nhập font chữ từ Google Fonts (Inter cho chữ thường, Pattaya/Itim cho nghệ thuật) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Pattaya&family=Itim&display=swap');
 
-/* ---- BIẾN CSS (Dùng để quản lý màu sắc, bo góc tập trung) ---- */
+/* ---- BIẾN CSS (Dùng để quản lý màu sắc, bo góc tập trung) ---- 
+   Bím giải thích: Biến CSS giống như một "Cái hộp dán nhãn". 
+   Thay vì phải nhớ mã màu "#10b981" và gõ lại ở 100 chỗ khác nhau, 
+   ta chỉ cần gọi tên cái hộp "var(--color-primary)" là xong!
+   Khi muốn đổi màu thương hiệu, chỉ cần sửa ở đây 1 lần duy nhất.
+*/
 :root {
     /* Màu sắc chủ đạo (Xanh lá - đặc trưng của VPP Ti Anh) */
     --color-primary: #10b981;
@@ -46,12 +51,16 @@
     --transition: 0.2s ease;
 }
 
-/* ---- RESET & BASE (Xóa các định dạng mặc định của trình duyệt) ---- */
+/* ---- RESET & BASE (Xóa các định dạng mặc định của trình duyệt) ---- 
+   Bím giải thích: Mỗi trình duyệt (Chrome, Safari, Edge) có một kiểu
+   khoảng cách mặc định khác nhau. Phần này giúp "xóa trắng" mọi thứ
+   để website của mình luôn hiển thị giống nhau trên mọi thiết bị.
+*/
 *,
 *::before,
 *::after {
     box-sizing: border-box;
-    /* Giúp việc tính toán kích thước padding/border không làm phình to phần tử */
+    /* Rất quan trọng: Giúp việc cộng thêm thẻ padding/border không làm phình to kích thước của khung chứa */
     margin: 0;
     padding: 0;
 }
@@ -93,9 +102,13 @@ img {
 
 main {
     padding-bottom: 40px;
+    /* Thêm khoảng trống ở dưới cùng cho thoáng */
 }
 
-/* Khung chứa nội dung chính, giới hạn chiều ngang tối đa để màn hình to không bị loãng */
+/* 
+   Khung chứa nội dung chính (Container) 
+   Giới hạn chiều ngang tối đa để màn hình tivi to cũng không bị loãng nội dung.
+*/
 .container {
     max-width: 1800px;
     width: 100%;
@@ -138,7 +151,11 @@ main {
 
 /* ---- POPUP/MODAL DÙNG CHUNG (Hiệu ứng và khung nền) ---- */
 
-/* Hiệu ứng mờ dần */
+/* 
+   Keyframes: Dùng để tự tạo ra một bộ phim hoạt hình (animation).
+   "fadeIn": Bắt đầu (from) từ trong suốt (opacity 0) 
+             rồi rõ dần (to) lên mức rõ nhất (opacity 1).
+*/
 @keyframes fadeIn {
     from {
         opacity: 0;

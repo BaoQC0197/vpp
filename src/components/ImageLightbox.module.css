@@ -1,8 +1,12 @@
-/* ImageLightbox.module.css */
+/* ImageLightbox.module.css 
+   Bím giải thích: File này thiết kế lúc bạn bấm vào cái ảnh sản phẩm, nó sẽ chớp một cái
+   rồi phóng to ra giữa màn hình để ngắm kỹ hơn.
+*/
 .overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.85);
+    /* Nền tối thui để tập trung vào ảnh */
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;

@@ -1,9 +1,13 @@
-/* src/components/Toast.module.css */
+/* src/components/Toast.module.css 
+   Bím giải thích: Đây là cái "Bánh mì nướng" (Thông báo nhỏ xíu nảy lên từ dưới đáy màn hình)
+*/
 .toast {
     position: fixed;
     bottom: 32px;
+    /* Thả neo cách đáy màn hình 32px */
     left: 50%;
     transform: translateX(-50%);
+    /* Bí kíp kéo bảng vào chính giữa màn hình (lệnh left 50% chỉ đẩy mép trái bảng vào giữa thôi) */
     display: flex;
     align-items: center;
     gap: 12px;
@@ -11,11 +15,16 @@
     background: #1e293b;
     color: white;
     border-radius: 9999px;
+    /* Bo tròn tuyệt đối thành hình hạt đậu */
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     z-index: 9999;
+    /* Cao nhất vũ trụ (Để không bị bất cứ cái gì đè lên) */
     cursor: pointer;
+
+    /* Chạy kịch bản animation slideUp, sau 2.7 giây thì chạy kịch bản fadeOut */
     animation: slideUp 0.3s ease-out, fadeOut 0.3s ease-in 2.7s forwards;
     white-space: nowrap;
+    /* Không rớt dòng */
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 

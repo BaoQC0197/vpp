@@ -1,10 +1,18 @@
-/* CartDrawer.module.css */
+/* CartDrawer.module.css 
+   Bím giải thích: File này dành cho "Ngăn kéo giỏ hàng" trượt từ phải sang trái.
+*/
 
+/* 
+   Lớp phủ nền mờ (Overlay)
+   - "position: fixed; inset: 0;" giúp nó phủ kín toàn bộ màn hình.
+   - Khi giỏ hàng chưa mở, nó sẽ vô hình (opacity: 0) và không click được (pointer-events: none).
+*/
 .cartOverlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, .45);
     z-index: 1000;
+    /* Nằm dưới giỏ hàng (1001) nhưng trên mọi thứ khác */
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -13,24 +21,34 @@
 .cartOverlay.visible {
     opacity: 1;
     pointer-events: all;
+    /* Bật lại khả năng click chuột */
 }
 
+/* Khung giỏ hàng chính */
 .cartDrawer {
     position: fixed;
     top: 0;
     right: 0;
     width: 420px;
     max-width: 100vw;
+    /* Không để giỏ hàng to hơn cả màn hình điện thoại */
     height: 100dvh;
+    /* dvh: Chiều cao thực tế của màn hình (trừ thanh công cụ trình duyệt) */
     background: var(--color-surface);
     z-index: 1001;
+    /* Phải lớn hơn lớp phủ Overlay (1000) */
     display: flex;
     flex-direction: column;
+
+    /* Ban đầu giấu nó sang bên phải màn hình (100% chiều rộng của chính nó) */
     transform: translateX(100%);
+
+    /* cubic-bezier tạo cảm giác trượt nhanh lúc đầu, phanh hãm lúc sau cực mượt */
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -8px 0 40px rgba(0, 0, 0, .15);
 }
 
+/* Khi có class .open, nó sẽ trượt về vị trí cũ (translateX: 0) */
 .cartDrawer.open {
     transform: translateX(0);
 }
@@ -111,9 +129,12 @@
     }
 }
 
+/* Khung nội dung giỏ hàng - Cho phép cuộn dọc */
 .cartDrawerBody {
     flex: 1;
+    /* Chiếm hết phần không gian trống còn lại giữa Header và Footer */
     overflow-y: auto;
+    /* Nếu nhiều hàng thì hiện thanh cuộn */
     padding: 16px 24px;
 }
 

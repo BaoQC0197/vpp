@@ -1,4 +1,7 @@
-/* MultiImageUpload.module.css */
+/* MultiImageUpload.module.css 
+   Bím giải thích: Nơi đây dùng để chứa danh sách nhiều ảnh tải lên cùng lúc 
+   cho tính năng Đăng Sản Phẩm Mới.
+*/
 
 .wrapper {
     display: flex;
@@ -6,7 +9,10 @@
     gap: 12px;
 }
 
-/* Grid of uploaded thumbnails */
+/* 
+   Khung chứa 3 bức ảnh nằm ngang (Lưới) 
+   - Dùng "grid-template-columns: repeat(3, 1fr)" để chia màn hình thành 3 ô bằng nhau
+*/
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -31,9 +37,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Cắt ảnh sao cho đầy khung, không bị méo */
     display: block;
 }
 
+/* Nhãn dán "Ảnh chính", "Ảnh phụ"... đính ở góc trên bên trái */
 .primaryBadge {
     position: absolute;
     top: 6px;
@@ -46,6 +54,7 @@
     border-radius: var(--radius-full);
     letter-spacing: 0.3px;
     pointer-events: none;
+    /* cấm click thủng qua */
 }
 
 .thumbActions {
@@ -141,16 +150,20 @@
     padding: 6px 0;
 }
 
+/* Vòng tròn xoay vòng thông báo đang tải ảnh */
 .spinner {
     width: 18px;
     height: 18px;
     border: 2px solid var(--color-primary-light);
     border-top-color: var(--color-primary);
+    /* Đầu vòng xoay tô màu đậm */
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
+    /* Gọi kịch bản "spin" quay liên tục */
     flex-shrink: 0;
 }
 
+/* Biên kịch cho vòng tròn quay tít thò lò (360 độ) */
 @keyframes spin {
     to {
         transform: rotate(360deg);

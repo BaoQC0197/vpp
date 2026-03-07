@@ -1,5 +1,13 @@
-/* Header.module.css */
+/* Header.module.css 
+   Bím giải thích: File này có chữ ".module" nghĩa là các class trong này 
+   chỉ áp dụng riêng cho Header, không sợ bị trùng tên (xung đột) với nơi khác.
+*/
 
+/* 
+   Thanh Header chính
+   - Dùng "position: sticky" để Header luôn bám dính ở trên cùng khi cuộn.
+   - Dùng "backdrop-filter: blur(12px)" để tạo hiệu ứng kính mờ xịn sò.
+*/
 .header {
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(12px);
@@ -7,8 +15,10 @@
     position: sticky;
     top: 0;
     z-index: 500;
+    /* Nâng mức độ ưu tiên hiển thị lên trên các phần khác (thường là 1) */
     box-shadow: var(--shadow-sm);
     transition: box-shadow 0.3s ease, background 0.3s ease;
+    /* Chuyển động mượt mà khi cuộn */
 }
 
 .header.scrolled {
@@ -19,15 +29,18 @@
 
 .headerInner {
     max-width: 1800px;
-    /* ĐỒNG BỘ VỚI LƯỚI NỘI DUNG CHUNG */
     width: 100%;
     margin: 0 auto;
     padding: 12px clamp(20px, 2.5%, 60px);
-    /* Bơm thêm 12px padding dọc (top, bottom) để trần nhà cao thoáng hơn */
     height: 100%;
+
+    /* Flexbox: Bí kíp xếp hàng ngang */
     display: flex;
+    /* Dàn các phần tử (Logo, Menu, Nút) thành một hàng ngang */
     align-items: center;
+    /* Căn giữa chúng theo trục dọc */
     justify-content: space-between;
+    /* Đẩy logo sang trái cùng, nút sang phải cùng */
 }
 
 /* Logo */
@@ -73,24 +86,31 @@
 
 .navLink {
     position: relative;
+    /* Đặt làm điểm mốc để gạch chân chạy nhảy bên dưới */
     padding: 6px 12px;
     font-size: 14px;
     font-weight: 500;
     color: var(--color-text-muted);
     transition: all var(--transition);
     white-space: nowrap;
+    /* Không cho chữ bị rớt dòng */
 }
 
+/* Pseudo-element (Phần tử giả) ::after để tạo cái gạch chân chạy ra khi trỏ chuột */
 .navLink::after {
     content: '';
+    /* Bắt buộc phải có để ::after hiển thị được */
     position: absolute;
+    /* Đặt tự do dựa vào thẻ .navLink (cha) */
     left: 50%;
     bottom: 0px;
     width: 0%;
+    /* Ban đầu giấu đi (chiều rộng = 0) */
     height: 2.5px;
     background-color: var(--color-primary);
     transition: all var(--transition);
     transform: translateX(-50%);
+    /* Kéo cái vạch vào giữa chữ */
     border-radius: 2px;
 }
 
@@ -159,6 +179,7 @@
     position: relative;
 }
 
+/* Nút mở hộp thoại đăng nhập (biểu tượng khóa) */
 .btnAdminToggle {
     background: var(--color-bg);
     border: 1px solid var(--color-border);
@@ -166,6 +187,8 @@
     width: 38px;
     height: 38px;
     font-size: 18px;
+
+    /* Lại dùng Flexbox để đưa cái khóa (chữ) ra đúng chính giữa nút tròn */
     display: flex;
     align-items: center;
     justify-content: center;

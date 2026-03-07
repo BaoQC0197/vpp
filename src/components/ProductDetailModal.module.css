@@ -1,18 +1,25 @@
-/* ProductDetailModal.module.css */
+/* ProductDetailModal.module.css 
+   Bím giải thích: File này làm đẹp cho cái bảng chi tiết hiện ra khi mình bấm vào 1 sản phẩm.
+*/
 
+/* Nền mờ đằng sau bảng */
 .overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(6px);
+    /* Kính mờ */
     z-index: 900;
     display: flex;
     align-items: center;
+    /* Căn giữa dọc */
     justify-content: center;
+    /* Căn giữa ngang */
     padding: 16px;
     animation: fadeIn 0.2s ease;
 }
 
+/* Hiệu ứng hiện dần ra từ trong suốt (opacity: 0 -> 1) */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -23,15 +30,18 @@
     }
 }
 
+/* Khối bảng màu trắng chứa thông tin nổi lên */
 .modal {
     background: var(--color-surface);
     border-radius: var(--radius-lg);
     box-shadow: 0 32px 80px rgba(0, 0, 0, 0.25);
     width: 100%;
     max-width: 880px;
+    /* Bảng này to hơn bảng bình thường (880px) vì có 2 cột chứa ảnh + chữ */
     max-height: 92vh;
     overflow-y: auto;
     position: relative;
+    /* Đặt mốc để gắn nút Tắt (closeBtn) vào góc */
     animation: slideUp 0.3s cubic-bezier(0.34, 1.3, 0.64, 1);
 }
 
@@ -71,7 +81,10 @@
     color: var(--color-text);
 }
 
-/* Body: 2-column grid */
+/* Body: 2-column grid 
+   Bím giải thích: Đây là sức mạnh của Grid. Từ 1 màn hình rộng, 
+   ta xẻ làm 2 cột bằng nhau (1fr 1fr), cột trái chứa ảnh, cột phải chứa chữ.
+*/
 .body {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -475,7 +488,10 @@
     font-weight: 700;
 }
 
-/* ── Responsive ── */
+/* ── Responsive ── 
+   Khi màn hình nhỏ dưới 640px (điện thoại), tắt chế độ 2 cột (1fr 1fr)
+   bằng cách cho nó thành 1 cột duy nhất (1fr). Nó sẽ tự xếp ảnh lên trên, chữ xuống dưới.
+*/
 @media (max-width: 640px) {
     .body {
         grid-template-columns: 1fr;

@@ -11,6 +11,8 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    touch-action: none;
+    /* Khóa hoàn toàn mọi thao tác cuộn trên nền mờ (sửa lỗi cuộn nền trên điện thoại) */
 }
 
 .adminOverlay.open {
@@ -180,6 +182,8 @@
     overflow-y: auto;
     padding: 24px;
     background: white;
+    overscroll-behavior: contain;
+    /* Ngăn chặn hiện tượng cuộn lố (scroll chaining) sang màn hình nền */
 }
 
 .tabSection h4 {
