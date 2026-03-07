@@ -9,7 +9,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, ADMIN_EMAIL } from '../lib/supabase';
-import { getProducts, addProduct, deleteProduct, updateProduct, getProductById, replaceProductImages } from '../api/products';
+import { getProducts, addProduct, deleteProduct, updateProduct, updateProductOrders, updateGlobalProductOrders, getProductById, replaceProductImages } from '../api/products';
 import { getCategories } from '../api/categories';
 import { useCart } from './useCart';
 import type { Product, ProductInput } from '../types/product';
@@ -99,6 +99,18 @@ export function useVppData() {
         await loadProducts();
     };
 
+    // Cập nhật thứ tự hiển thị sản phẩm (Danh mục)
+    const handleUpdateProductOrders = async (updates: { id: number; sort_order: number }[]) => {
+        await updateProductOrders(updates);
+        await loadProducts();
+    };
+
+    // Cập nhật thứ tự hiển thị sản phẩm (Khắp nơi - Trang chủ)
+    const handleUpdateGlobalProductOrders = async (updates: { id: number; global_sort_order: number | null }[]) => {
+        await updateGlobalProductOrders(updates);
+        await loadProducts();
+    };
+
     // Lấy chi tiết một sản phẩm (để sửa hoặc xem chi tiết)
     const getFullProduct = async (id: number) => {
         return await getProductById(id);
@@ -116,6 +128,8 @@ export function useVppData() {
         handleAddProduct,
         handleDeleteProduct,
         handleUpdateProduct,
+        handleUpdateProductOrders,
+        handleUpdateGlobalProductOrders,
         handleRefreshCategories,
         getFullProduct,
     };

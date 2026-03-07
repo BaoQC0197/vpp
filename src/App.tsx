@@ -57,6 +57,8 @@ export default function App() {
         handleAddProduct,
         handleDeleteProduct,
         handleUpdateProduct,
+        handleUpdateProductOrders,
+        handleUpdateGlobalProductOrders,
         handleRefreshCategories,
         getFullProduct,
     } = useVppData();
@@ -166,12 +168,33 @@ export default function App() {
         setSearchQuery('');
     };
 
-    // Filter
+    // Filter và Sắp xếp
     const filteredProducts = products.filter((p) => {
         const matchCategory = activeCategory === 'all' || p.category === activeCategory;
         const q = searchQuery.trim().toLowerCase();
         const matchSearch = !q || p.name.toLowerCase().includes(q);
         return matchCategory && matchSearch;
+    }).sort((a, b) => {
+        // Nếu đang ở trang chủ (Tất cả), sử dụng global_sort_order để ưu tiên ghim
+        if (activeCategory === 'all') {
+            const globalA = a.global_sort_order;
+            const globalB = b.global_sort_order;
+
+            // Cả 2 đều được ghim -> So sánh vị trí ghim
+            if (globalA !== null && globalA !== undefined && globalB !== null && globalB !== undefined) {
+                return globalA - globalB;
+            }
+            // Chỉ A được ghim -> A lên trước
+            if (globalA !== null && globalA !== undefined) return -1;
+            // Chỉ B được ghim -> B lên trước
+            if (globalB !== null && globalB !== undefined) return 1;
+
+            // Nếu không ai được ghim, hiển thị mới nhất giảm dần
+            return b.id - a.id;
+        }
+
+        // Nếu ở trong danh mục cụ thể, backend đã sort theo sort_order và id rồi nên giữ nguyên thứ tự ban đầu của API
+        return 0;
     });
 
     // Product count per category
@@ -221,6 +244,9 @@ export default function App() {
                     onRefreshCategories={handleRefreshCategories}
                     productCategoryCounts={productCategoryCounts}
                     products={products}
+                    onUpdateProductOrders={handleUpdateProductOrders}
+                    onUpdateGlobalProductOrders={handleUpdateGlobalProductOrders}
+                    showToast={showToast}
                 />
             )}
 

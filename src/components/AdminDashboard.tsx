@@ -16,6 +16,7 @@ import { addProductImages } from '../api/products';
 import MultiImageUpload from './MultiImageUpload';
 import CategoryManager from './CategoryManager';
 import PromotionManager from './PromotionManager';
+import ProductSortManager from './ProductSortManager';
 import styles from './AdminDashboard.module.css';
 
 interface AdminDashboardProps {
@@ -26,6 +27,9 @@ interface AdminDashboardProps {
     onRefreshCategories: () => void;
     productCategoryCounts: Record<string, number>;
     products: Product[];
+    onUpdateProductOrders: (updates: { id: number; sort_order: number }[]) => Promise<void>;
+    onUpdateGlobalProductOrders: (updates: { id: number; global_sort_order: number | null }[]) => Promise<void>;
+    showToast: (message: string, type?: 'success' | 'error') => void;
 }
 
 const ALL_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'delivering', 'delivered', 'cancelled'];
@@ -128,7 +132,7 @@ function AddProductForm({ onAdd, categories }: { onAdd: (product: ProductInput) 
                 <textarea placeholder="Mô tả (không bắt buộc)" value={description} onChange={(e) => setDescription(e.target.value)} />
 
                 <label className="field-label">Danh mục</label>
-                <select value={selectValue} onChange={(e) => { setSelectValue(e.target.value); setCustomCategory(''); }}>
+                <select className="vpp-select" value={selectValue} onChange={(e) => { setSelectValue(e.target.value); setCustomCategory(''); }}>
                     {categories.map(c => <option key={c.key} value={c.key}>{c.icon} {c.label}</option>)}
                     <option value={CUSTOM_KEY}>➕ Thêm danh mục mới...</option>
                 </select>
@@ -358,9 +362,9 @@ function OrderHistory() {
 }
 
 // ===================== DASHBOARD CHÍNH (Gồm các Tab) =====================
-type Tab = 'products' | 'orders' | 'categories' | 'promotions';
+type Tab = 'products' | 'orders' | 'categories' | 'promotions' | 'sort';
 
-export default function AdminDashboard({ open, onClose, onAdd, categories, onRefreshCategories, productCategoryCounts, products }: AdminDashboardProps) {
+export default function AdminDashboard({ open, onClose, onAdd, categories, onRefreshCategories, productCategoryCounts, products, onUpdateProductOrders, onUpdateGlobalProductOrders, showToast }: AdminDashboardProps) {
     const [activeTab, setActiveTab] = useState<Tab>('products');
     const [unreadCount, setUnreadCount] = useState(0);
 
@@ -420,6 +424,10 @@ export default function AdminDashboard({ open, onClose, onAdd, categories, onRef
                         <div className={styles.tabIconWrapper}><span className={styles.tabIcon}>🏷️</span></div>
                         <span>Quản lý danh mục</span>
                     </button>
+                    <button className={`${styles.dashboardTab}${activeTab === 'sort' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('sort')}>
+                        <div className={styles.tabIconWrapper}><span className={styles.tabIcon}>↕️</span></div>
+                        <span>Sắp xếp sản phẩm</span>
+                    </button>
                     <button className={`${styles.dashboardTab}${activeTab === 'promotions' ? ' ' + styles.active : ''}`} onClick={() => setActiveTab('promotions')}>
                         <div className={styles.tabIconWrapper}><span className={styles.tabIcon}>🔥</span></div>
                         <span>Quản lý khuyến mãi</span>
@@ -444,6 +452,18 @@ export default function AdminDashboard({ open, onClose, onAdd, categories, onRef
                     {activeTab === 'categories' && (
                         <div className={styles.tabSection}>
                             <CategoryManager categories={categories} productCategoryCounts={productCategoryCounts} onRefresh={onRefreshCategories} />
+                        </div>
+                    )}
+                    {activeTab === 'sort' && (
+                        <div className={styles.tabSection}>
+                            <h4>↕️ Sắp xếp sản phẩm</h4>
+                            <ProductSortManager
+                                categories={categories}
+                                products={products}
+                                onUpdateOrders={onUpdateProductOrders}
+                                onUpdateGlobalOrders={onUpdateGlobalProductOrders}
+                                showToast={showToast}
+                            />
                         </div>
                     )}
                     {activeTab === 'promotions' && (

@@ -94,7 +94,7 @@ export default function EditModal({ product, categories, onSave, onClose }: Edit
 
                     <div className={styles.formField}>
                         <label className="field-label">Danh mục</label>
-                        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <select className="vpp-select" value={category} onChange={(e) => setCategory(e.target.value)}>
                             {categories.map(c => (
                                 <option key={c.key} value={c.key}>{c.icon} {c.label}</option>
                             ))}

@@ -10,6 +10,8 @@ export interface Product {
     category?: string;
     images?: string[]; // gallery images from product_images table
     promotion?: Promotion | null;
+    sort_order?: number;
+    global_sort_order?: number | null;
 }
 
-export type ProductInput = Omit<Product, 'id' | 'images' | 'promotion'>;
+export type ProductInput = Omit<Product, 'id' | 'images' | 'promotion' | 'sort_order' | 'global_sort_order'>;

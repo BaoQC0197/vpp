@@ -17,6 +17,7 @@ export async function getProducts(): Promise<Product[]> {
     const { data, error } = await supabase
         .from('products')
         .select('*, product_images(id, url, position), promotions(*)')
+        .order('sort_order', { ascending: true })
         .order('id', { ascending: false }); // Sắp xếp cái nào mới nhất hiện lên đầu
 
     if (error) {
@@ -69,6 +70,29 @@ export async function updateProduct(
         .update(updatedData)
         .eq('id', id);
     if (error) throw error;
+}
+
+// HÀM: CẬP NHẬT THỨ TỰ NHIỀU SẢN PHẨM (Sắp xếp trong Danh mục cụ thể)
+export async function updateProductOrders(
+    updates: { id: number; sort_order: number }[]
+): Promise<void> {
+    // Gọi nhiều lệnh update cùng lúc
+    await Promise.all(
+        updates.map(u =>
+            supabase.from('products').update({ sort_order: u.sort_order }).eq('id', u.id)
+        )
+    );
+}
+
+// HÀM: CẬP NHẬT THỨ TỰ NHIỀU SẢN PHẨM TRANH CHỦ (Sắp xếp Toàn cục)
+export async function updateGlobalProductOrders(
+    updates: { id: number; global_sort_order: number | null }[]
+): Promise<void> {
+    await Promise.all(
+        updates.map(u =>
+            supabase.from('products').update({ global_sort_order: u.global_sort_order }).eq('id', u.id)
+        )
+    );
 }
 
 // HÀM: LẤY CHI TIẾT 1 SẢN PHẨM THEO ID
