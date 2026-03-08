@@ -23,7 +23,7 @@ import FloatButtons from './components/FloatButtons';
 import ConfirmModal from './components/ConfirmModal';
 import ProductDetailModal from './components/ProductDetailModal';
 import OrderHistoryDrawer from './components/OrderHistoryDrawer';
-import SaleSection from './components/SaleSection';
+// import SaleSection from './components/SaleSection';
 import Toast, { type ToastType } from './components/Toast';
 import styles from './App.module.css';
 import logoImg from './assets/logo.png';
@@ -213,7 +213,7 @@ export default function App() {
                 onAdminPanelOpen={() => setAdminPanelOpen(true)} // Mở trung tâm điều khiển
             />
             <Hero searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-            <SaleSection products={products} onViewDetail={(p) => setDetailProduct(p)} />
+            {/* <SaleSection products={products} onViewDetail={(p) => setDetailProduct(p)} /> */}
             <CategoryBar
                 activeCategory={activeCategory}
                 onFilter={(cat) => { setActiveCategory(cat); setSearchQuery(''); }}

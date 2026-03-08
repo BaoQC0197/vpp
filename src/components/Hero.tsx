@@ -8,9 +8,20 @@ interface HeroProps {
 }
 
 const CAROUSEL_IMAGES = [
-    '/hero-rect-1.png',
-    '/hero-rect-2.png',
-    '/hero-rect-3.png',
+    '/hero-stationery-1.png',
+    '/hero-backpack-1.png',
+    '/hero-gifts-1.png',
+    '/hero-printing-2.png',
+    '/hero-backpack-2.png',
+];
+
+const CAROUSEL_TEXTS = [
+    { title: "Siêu rẻ", desc: "Sale up to 50%" },
+    { title: "Đầy đủ", desc: "Hành trang năm học mới" },
+    { title: "Cập nhật", desc: "Mẫu mới hot trend" },
+    { title: "Free ship", desc: "Đơn hàng 200k+" },
+    { title: "Free ship", desc: "Đơn hàng 200k+" },
+
 ];
 
 export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
@@ -64,27 +75,47 @@ export default function Hero({ searchQuery, onSearchChange }: HeroProps) {
                     </div>
                 </div>
 
-                {/* Right: Image carousel */}
+                {/* Right: Cover & Grid */}
                 <div className={styles.heroImageWrap}>
                     <div className={styles.heroImageGlow} />
-                    <div className={styles.heroCarousel}>
-                        {CAROUSEL_IMAGES.map((src, idx) => (
-                            <img
-                                key={src}
-                                src={src}
-                                alt="Văn phòng phẩm và dịch vụ photo"
-                                className={`${styles.heroCarouselItem}${idx === currentImageIndex ? ' ' + styles.active : ''}`}
-                                loading={idx === 0 ? 'eager' : 'lazy'}
-                            />
-                        ))}
-                        <div className={styles.heroCarouselIndicators}>
-                            {CAROUSEL_IMAGES.map((_, idx) => (
-                                <button
-                                    key={idx}
-                                    className={`${styles.heroCarouselDot}${idx === currentImageIndex ? ' ' + styles.active : ''}`}
-                                    onClick={() => setCurrentImageIndex(idx)}
-                                    aria-label={`Go to slide ${idx + 1}`}
+
+                    <div className={styles.masonryWrap}>
+                        {/* Box 1: Large image cycling */}
+                        <div className={`${styles.masonryItem} ${styles.m1}`}>
+                            {CAROUSEL_IMAGES.map((src, idx) => (
+                                <img
+                                    key={src}
+                                    src={src}
+                                    alt="Văn phòng phẩm"
+                                    className={`${styles.masonryImage}${idx === currentImageIndex ? ' ' + styles.active : ''}`}
+                                    loading={idx === 0 ? 'eager' : 'lazy'}
                                 />
+                            ))}
+                        </div>
+
+                        {/* Box 2: Small image cycling (offset by 1) */}
+                        <div className={`${styles.masonryItem} ${styles.m2}`}>
+                            {CAROUSEL_IMAGES.map((src, idx) => (
+                                <img
+                                    key={`small-${src}`}
+                                    src={src}
+                                    alt="Dụng cụ học tập"
+                                    className={`${styles.masonryImage}${idx === (currentImageIndex + 1) % CAROUSEL_IMAGES.length ? ' ' + styles.active : ''}`}
+                                    loading="lazy"
+                                />
+                            ))}
+                        </div>
+
+                        {/* Box 3: Text cycling */}
+                        <div className={`${styles.masonryItem} ${styles.m3}`}>
+                            {CAROUSEL_TEXTS.map((text, idx) => (
+                                <div
+                                    key={`text-${idx}`}
+                                    className={`${styles.masonryText}${idx === currentImageIndex ? ' ' + styles.active : ''}`}
+                                >
+                                    <h3>{text.title}</h3>
+                                    <p>{text.desc}</p>
+                                </div>
                             ))}
                         </div>
                     </div>
